@@ -1,0 +1,3 @@
+id name calcium_chess_engine_v1
+id author Folke Cederholm
+uciok
