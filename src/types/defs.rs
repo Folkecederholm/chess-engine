@@ -1,8 +1,24 @@
 #![allow(unused)]
 pub struct Board {
     pub(super) board: [[Tile; 8]; 8],
+    pub(super) turn_to_play: Colour,
+    pub variant: ChessVariant,
+    pub(super) passant_square: Option<Coord>,
+    pub(super) fifty_move_rule: u32,
+    pub(super) moves: u32,
+    pub(super) castling_rights: CastlingRights,
 }
 
+pub enum ChessVariant {
+    Chess,
+    Fisher,
+}
+
+pub struct CastlingRights {
+    pub(super) castling_rights: [Option<Coord>; 4],
+}
+
+#[derive(Clone, Copy)]
 pub struct Coord {
     pub(super) x: usize,
     pub(super) y: usize,
@@ -21,7 +37,7 @@ pub struct Piece {
 }
 
 #[derive(Clone, Copy)]
-pub(super) enum Colour {
+pub enum Colour {
     White,
     Black,
 }

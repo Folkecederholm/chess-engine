@@ -3,7 +3,17 @@ use crate::types::defs::*;
 impl Board {
     pub fn empty() -> Self {
         let board: [[Tile; 8]; 8] = std::array::from_fn(|_| std::array::from_fn(|_| Tile::empty()));
-        Self { board: board }
+        Self {
+            board: board,
+            turn_to_play: Colour::White,
+            variant: ChessVariant::Chess,
+            passant_square: None,
+            fifty_move_rule: 0,
+            moves: 0,
+            castling_rights: CastlingRights {
+                castling_rights: [None, None, None, None],
+            },
+        }
     }
     pub fn make_move(&mut self, start: Coord, end: Coord) {
         let moved_option = self.board[start.x][start.y].piece;
@@ -25,6 +35,23 @@ impl Board {
                 *tile = Tile::empty();
             }
         }
+    }
+    pub fn set_to_move(&mut self, colour: Colour) {
+        self.turn_to_play = colour;
+    }
+    pub fn set_castling(&mut self, tiles: [Option<Coord>; 4]) {
+        let mut castling_rights: [Option<Coord>; 4] = [None, None, None, None];
+        for (i, tile) in tiles.iter().enumerate() {
+            match tile {
+                None => {
+                    break;
+                }
+                Some(n) => {
+                    castling_rights[i] = Some(*n);
+                }
+            }
+        }
+        self.castling_rights = CastlingRights { castling_rights };
     }
 }
 

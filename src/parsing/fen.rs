@@ -2,27 +2,86 @@ use crate::types::defs::*;
 
 impl Board {
     pub fn go_to_fen(&mut self, fen: &str) {
+        use crate::exit;
         use crate::types::defs::Piece;
         self.drain();
         let mut split = fen.split(" ");
         let pieces_fen = match split.next() {
-            Some(n) => n.chars(),
+            Some(n) => n,
             None => {
-                eprintln!("No first field in FEN string for pieces!");
-                std::process::exit(1);
+                exit!("Invalid FEN!")
             }
         };
-        let rows = pieces_fen.as_str().split("/");
-        for (x, row) in rows.enumerate() {
-            let mut row_iter = row.chars().enumerate();
-            while let Some(tuple) = row_iter.next() {
-                let (y, piece) = tuple;
-                if piece.is_ascii_digit() {
-                    row_iter.nth(piece.to_digit(10).unwrap() as usize);
-                } else {
-                    let piece_to_add = Piece::get_piece_from_fen(piece);
-                    self.set_piece(Coord::xy(x, y), piece_to_add);
+        fen_board_state(self, pieces_fen);
+        let colour_fen = match split.next() {
+            Some(n) => n,
+            None => {
+                exit!("Invalid FEN!")
+            }
+        };
+        fen_colour(self, colour_fen);
+        let castling_fen = match split.next() {
+            Some(n) => n,
+            None => {
+                exit!("Invalid FEN!")
+            }
+        };
+        fen_castling(self, castling_fen);
+        // INNER FNS
+        fn fen_board_state(board: &mut Board, pieces_fen: &str) {
+            let rows = pieces_fen.split("/");
+            for (x, row) in rows.enumerate() {
+                let mut row_iter = row.chars().enumerate();
+                while let Some(tuple) = row_iter.next() {
+                    let (y, piece) = tuple;
+                    if piece.is_ascii_digit() {
+                        row_iter.nth(piece.to_digit(10).unwrap() as usize);
+                    } else {
+                        let piece_to_add = Piece::get_piece_from_fen(piece);
+                        board.set_piece(Coord::xy(x, y), piece_to_add);
+                    }
                 }
+            }
+        }
+        fn fen_colour(board: &mut Board, colour_fen: &str) {
+            board.set_to_move(match colour_fen {
+                "w" => Colour::White,
+                "b" => Colour::Black,
+                _ => {
+                    exit!("Invalid FEN!");
+                }
+            });
+        }
+        fn fen_castling(board: &mut Board, castling_fen: &str) {
+            if castling_fen.len() > 4 {
+                exit!("Invalid FEN!")
+            };
+            let mut castling_rights: [Option<Coord>; 4] = [None, None, None, None];
+            let fen_castling_fn: fn(char) -> Option<Coord> = match board.variant {
+                ChessVariant::Chess => fen_castling_normal_chess,
+                ChessVariant::Fisher => fen_castling_fisher_chess,
+            };
+            for (i, piece) in castling_fen.chars().enumerate() {
+                castling_rights[i] = fen_castling_fn(piece);
+            }
+            board.set_castling(castling_rights);
+
+            fn fen_castling_normal_chess(piece: char) -> Option<Coord> {
+                match piece {
+                    'K' => Some(Coord::ay('a', 1)),
+                    'Q' => Some(Coord::ay('h', 1)),
+                    'k' => Some(Coord::ay('a', 8)),
+                    'q' => Some(Coord::ay('h', 8)),
+                    _ => None,
+                }
+            }
+            fn fen_castling_fisher_chess(piece: char) -> Option<Coord> {
+                let y = match piece.is_ascii_lowercase() {
+                    true => 8,
+                    false => 1,
+                };
+                let a = piece.to_ascii_lowercase();
+                Some(Coord::ay(a, y))
             }
         }
     }

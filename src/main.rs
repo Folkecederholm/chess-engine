@@ -11,6 +11,10 @@ mod types {
     pub mod traits;
 }
 
+mod extras {
+    pub mod macros;
+}
+
 fn main() {
     let piece = Piece::get_piece_from_fen('Q');
     let tile = Tile::with_piece(piece);
@@ -64,7 +68,7 @@ fn parse_user_input(input: &str, board: &mut Board) {
     fn parse_single_word(input: &str, board: &Board) {
         match input {
             "uci" => {
-                print_flush(include_str!("strings/uci.txt"));
+                print_flush(include_str!("extras/uci.txt"));
             }
             "isready" => {
                 print_flush("readyok");

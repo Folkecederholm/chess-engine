@@ -8,7 +8,7 @@ impl fmt::Display for Tile {
             let piece_char = get_codepoint(piece);
             return write!(f, "{}", piece_char);
         } else {
-            return write!(f, "Ø");
+            return write!(f, " ");
         }
         fn get_codepoint(piece: Piece) -> char {
             let mut codepoint: u32 = 0x2654;
