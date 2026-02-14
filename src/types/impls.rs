@@ -53,6 +53,9 @@ impl Board {
         }
         self.castling_rights = CastlingRights { castling_rights };
     }
+    pub fn set_passant(&mut self, tile: Option<Coord>) {
+        self.passant_square = tile;
+    }
 }
 
 impl Coord {

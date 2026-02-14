@@ -24,6 +24,10 @@ impl Board {
             exit!("Invalid FEN!");
         };
         fen_castling(self, castling_fen);
+        let Some(passant_fen) = split.next() else {
+            exit!("Invalid FEN!");
+        };
+        fen_passant(self, passant_fen);
         // INNER FNS
         fn fen_board_state(board: &mut Board, pieces_fen: &str) {
             let rows = pieces_fen.split('/');
@@ -76,6 +80,14 @@ impl Board {
                 let y = if piece.is_ascii_lowercase() { 8 } else { 1 };
                 let a = piece.to_ascii_lowercase();
                 Coord::ay(a, y)
+            }
+        }
+        fn fen_passant(board: &mut Board, passant_fen: &str) {
+            if passant_fen == " " {
+                board.set_passant(None);
+            } else {
+                let passant_tile = Coord::new(passant_fen);
+                board.set_passant(passant_tile);
             }
         }
     }
