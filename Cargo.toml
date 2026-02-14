@@ -2,3 +2,10 @@
 name = "chess_engine"
 version = "0.1.0"
 edition = "2024"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+redundant-else = "allow"
+wildcard-imports = "allow"
+items-after-statements = "allow" # To allow nested functions after the function body
+#cargo = "warn"

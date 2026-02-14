@@ -18,7 +18,7 @@ mod extras {
 fn main() {
     let piece = Piece::get_piece_from_fen('Q');
     let tile = Tile::with_piece(piece);
-    println!("{}", tile);
+    println!("{tile}");
     let mut input = String::new();
     let mut board = Board::empty();
     loop {
@@ -42,14 +42,12 @@ fn take_user_input(input: &mut String) {
 
 fn print_flush(string: &str) {
     use std::io::{Write, stdout};
-    print!("{}\n", string);
+    println!("{string}");
     let _ = stdout().flush();
 }
 
 fn parse_user_input(input: &str, board: &mut Board) {
-    if !input.contains(" ") {
-        parse_single_word(input, board);
-    } else {
+    if input.contains(' ') {
         // Mutable so that we can remove the already known stuff when parsing later
         let mut tokens: Vec<_> = input.split(' ').collect();
         if let Some(first) = tokens.first() {
@@ -63,6 +61,8 @@ fn parse_user_input(input: &str, board: &mut Board) {
                 }
             }
         }
+    } else {
+        parse_single_word(input, board);
     }
 
     fn parse_single_word(input: &str, board: &Board) {
@@ -78,7 +78,7 @@ fn parse_user_input(input: &str, board: &mut Board) {
             }
             "board" => {
                 // board.print();
-                print!("{}", board);
+                print!("{board}");
             }
             _ => {
                 wrongly_called();
@@ -91,7 +91,7 @@ fn parse_user_input(input: &str, board: &mut Board) {
             match *first {
                 "startpos" => {
                     println!("Startpos it is!");
-                    board.from_startpos(input_tokens.split_off(1));
+                    board.goto_startpos(input_tokens.split_off(1));
                 }
                 "fen" => {
                     println!("fen is the way to go!");
@@ -103,7 +103,7 @@ fn parse_user_input(input: &str, board: &mut Board) {
                 _ => {
                     wrongly_called();
                 }
-            };
+            }
         }
     }
 }

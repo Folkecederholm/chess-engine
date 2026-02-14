@@ -5,31 +5,28 @@ impl Board {
         use crate::exit;
         use crate::types::defs::Piece;
         self.drain();
-        let mut split = fen.split(" ");
-        let pieces_fen = match split.next() {
-            Some(n) => n,
-            None => {
-                exit!("Invalid FEN!")
-            }
+        let mut split = fen.split(' ');
+        // let pieces_fen = match split.next() {
+        //     Some(n) => n,
+        //     None => {
+        //         exit!("Invalid FEN!")
+        //     }
+        // };
+        let Some(pieces_fen) = split.next() else {
+            exit!("Invalid FEN!");
         };
         fen_board_state(self, pieces_fen);
-        let colour_fen = match split.next() {
-            Some(n) => n,
-            None => {
-                exit!("Invalid FEN!")
-            }
+        let Some(colour_fen) = split.next() else {
+            exit!("Invalid FEN!");
         };
         fen_colour(self, colour_fen);
-        let castling_fen = match split.next() {
-            Some(n) => n,
-            None => {
-                exit!("Invalid FEN!")
-            }
+        let Some(castling_fen) = split.next() else {
+            exit!("Invalid FEN!");
         };
         fen_castling(self, castling_fen);
         // INNER FNS
         fn fen_board_state(board: &mut Board, pieces_fen: &str) {
-            let rows = pieces_fen.split("/");
+            let rows = pieces_fen.split('/');
             for (x, row) in rows.enumerate() {
                 let mut row_iter = row.chars().enumerate();
                 while let Some(tuple) = row_iter.next() {
@@ -55,7 +52,7 @@ impl Board {
         fn fen_castling(board: &mut Board, castling_fen: &str) {
             if castling_fen.len() > 4 {
                 exit!("Invalid FEN!")
-            };
+            }
             let mut castling_rights: [Option<Coord>; 4] = [None, None, None, None];
             let fen_castling_fn: fn(char) -> Option<Coord> = match board.variant {
                 ChessVariant::Chess => fen_castling_normal_chess,
@@ -68,20 +65,17 @@ impl Board {
 
             fn fen_castling_normal_chess(piece: char) -> Option<Coord> {
                 match piece {
-                    'K' => Some(Coord::ay('a', 1)),
-                    'Q' => Some(Coord::ay('h', 1)),
-                    'k' => Some(Coord::ay('a', 8)),
-                    'q' => Some(Coord::ay('h', 8)),
+                    'K' => Coord::ay('a', 1),
+                    'Q' => Coord::ay('h', 1),
+                    'k' => Coord::ay('a', 8),
+                    'q' => Coord::ay('h', 8),
                     _ => None,
                 }
             }
             fn fen_castling_fisher_chess(piece: char) -> Option<Coord> {
-                let y = match piece.is_ascii_lowercase() {
-                    true => 8,
-                    false => 1,
-                };
+                let y = if piece.is_ascii_lowercase() { 8 } else { 1 };
                 let a = piece.to_ascii_lowercase();
-                Some(Coord::ay(a, y))
+                Coord::ay(a, y)
             }
         }
     }

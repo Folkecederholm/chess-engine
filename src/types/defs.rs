@@ -1,6 +1,6 @@
 #![allow(unused)]
 pub struct Board {
-    pub(super) board: [[Tile; 8]; 8],
+    pub(super) grid: [[Tile; 8]; 8],
     pub(super) turn_to_play: Colour,
     pub variant: ChessVariant,
     pub(super) passant_square: Option<Coord>,

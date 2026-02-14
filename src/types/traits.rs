@@ -6,7 +6,7 @@ impl fmt::Display for Tile {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(piece) = self.piece {
             let piece_char = get_codepoint(piece);
-            return write!(f, "{}", piece_char);
+            return write!(f, "{piece_char}");
         } else {
             return write!(f, " ");
         }
@@ -35,12 +35,12 @@ impl fmt::Display for Tile {
 impl fmt::Display for Board {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut buf = String::new();
-        for row in self.board.iter().rev() {
-            buf.push_str("\n");
+        for row in self.grid.iter().rev() {
+            buf.push('\n');
             for tile in row.iter().rev() {
-                buf.push_str(format!("{} ", tile).as_str());
+                buf.push_str(format!("{tile} ").as_str());
             }
         }
-        writeln!(f, "{}", buf)
+        writeln!(f, "{buf}")
     }
 }
