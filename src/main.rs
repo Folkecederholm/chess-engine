@@ -2,7 +2,7 @@ use crate::types::defs::Board;
 
 mod parsing {
     pub mod fen;
-    pub mod startpos;
+    pub mod trace;
 }
 mod types {
     pub mod defs;
@@ -86,13 +86,22 @@ fn parse_user_input(input: &str, board: &mut Board) {
         if let Some(first) = input_tokens.first() {
             match *first {
                 "startpos" => {
-                    println!("Startpos it is!");
-                    // board.goto_startpos(input_tokens.split_off(1));
-                    parse_startpos(board, &mut input_tokens.split_off(1));
+                    board.go_to_fen(include_str!("extras/startpos.fen"));
+                    // parse_more_moves(board, &mut input_tokens.split_off(1));
+                    if let Some(moves) = input_tokens.get(1)
+                        && *moves == "moves"
+                    {
+                        // parse_more_moves(board, &mut input_tokens.split_off(1));
+                        board.trace_moves(input_tokens.split_off(2));
+                    }
                 }
                 "fen" => {
-                    println!("fen is the way to go!");
-                    board.go_to_fen(input_tokens.split_off(1).first().unwrap());
+                    // vec!["fen", "...", "...", "...", "moves", "e2e4", "e7e5q"]
+                    if let Some(fen_end) = input_tokens.iter().position(|x| *x == "moves") {
+                        let mut trace_moves = input_tokens.split_off(fen_end);
+                        board.go_to_fen(input_tokens.split_off(1).join(" ").as_str());
+                        board.trace_moves(trace_moves.split_off(1));
+                    }
                 }
                 "default" => {
                     board.go_to_fen(include_str!("extras/startpos.fen"));
@@ -100,18 +109,6 @@ fn parse_user_input(input: &str, board: &mut Board) {
                 _ => {
                     wrongly_called();
                 }
-            }
-        }
-        fn parse_startpos(board: &mut Board, input_tokens: &mut Vec<&str>) {
-            if let Some(moves) = input_tokens.first() {
-                if *moves == "moves" {
-                    board.goto_startpos(input_tokens.split_off(1));
-                } else {
-                    eprintln!("Wrongly called!");
-                    std::process::exit(1);
-                }
-            } else {
-                board.go_to_fen(include_str!("extras/startpos.fen"));
             }
         }
     }

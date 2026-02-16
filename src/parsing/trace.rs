@@ -1,8 +1,7 @@
-use crate::types::defs::{Board, Coord, Promotion};
+use crate::types::defs::*;
 
 impl Board {
-    pub fn goto_startpos(&mut self, moves: Vec<&str>) {
-        self.go_to_fen(include_str!("../extras/startpos.fen"));
+    pub fn trace_moves(&mut self, moves: Vec<&str>) {
         for single_move in moves {
             // println!("{single_move}");
             let (start, end, promote_to) = parse_single_move(single_move);
