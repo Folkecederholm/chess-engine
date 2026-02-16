@@ -16,10 +16,11 @@ impl Board {
         }
     }
     pub fn make_move(&mut self, start: Coord, end: Coord) {
-        let moved_option = self.grid[start.x][start.y].piece;
+        let moved_option = self.grid[start.y][start.x].piece;
+        println!("self: {self}");
         if let Some(moved_piece) = moved_option {
-            self.grid[end.x][end.y].piece = Some(moved_piece);
-            self.grid[start.x][start.y].piece = None;
+            self.grid[end.y][end.x].piece = Some(moved_piece);
+            self.grid[start.y][start.x].piece = None;
         } else {
             eprintln!("Tried to move an empty piece!");
             std::process::exit(1);
@@ -69,7 +70,7 @@ impl Coord {
         Self { x, y }
     }
     pub fn ay(a: char, y: usize) -> Option<Self> {
-        let x = a as usize - 97;
+        let x = a as usize - 97; // a goes to 0, b goes to 1 ...
         if
         /*0 > x ||*/
         x > 7 {
@@ -92,12 +93,13 @@ impl Coord {
         // let Some(to_return) = Self::ay(first_char, second_char as usize - 48) else {
         //     return None;
         // };
-        let to_return = Self::ay(first_char, second_char as usize - 48)?;
+        let to_return = Self::ay(first_char, second_char as usize - 49)?; // -49 because it's zero-indexed
         Some(to_return)
         // Self::ay(first_char, second_char as usize - 48)
     }
 }
 
+#[allow(unused)]
 impl Tile {
     fn empty() -> Self {
         Self { piece: None }

@@ -1,5 +1,4 @@
 use crate::types::defs::Board;
-use crate::types::defs::{Piece, Tile};
 
 mod parsing {
     pub mod fen;
@@ -16,9 +15,6 @@ mod extras {
 }
 
 fn main() {
-    let piece = Piece::get_piece_from_fen('Q');
-    let tile = Tile::with_piece(piece);
-    println!("{tile}");
     let mut input = String::new();
     let mut board = Board::empty();
     loop {
@@ -91,18 +87,31 @@ fn parse_user_input(input: &str, board: &mut Board) {
             match *first {
                 "startpos" => {
                     println!("Startpos it is!");
-                    board.goto_startpos(input_tokens.split_off(1));
+                    // board.goto_startpos(input_tokens.split_off(1));
+                    parse_startpos(board, &mut input_tokens.split_off(1));
                 }
                 "fen" => {
                     println!("fen is the way to go!");
                     board.go_to_fen(input_tokens.split_off(1).first().unwrap());
                 }
                 "default" => {
-                    board.go_to_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+                    board.go_to_fen(include_str!("extras/startpos.fen"));
                 }
                 _ => {
                     wrongly_called();
                 }
+            }
+        }
+        fn parse_startpos(board: &mut Board, input_tokens: &mut Vec<&str>) {
+            if let Some(moves) = input_tokens.first() {
+                if *moves == "moves" {
+                    board.goto_startpos(input_tokens.split_off(1));
+                } else {
+                    eprintln!("Wrongly called!");
+                    std::process::exit(1);
+                }
+            } else {
+                board.go_to_fen(include_str!("extras/startpos.fen"));
             }
         }
     }
