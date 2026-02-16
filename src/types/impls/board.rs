@@ -127,107 +127,31 @@ impl Board {
     }
 }
 
-impl Coord {
-    pub fn xy(x: usize, y: usize) -> Self {
-        Self { x, y }
-    }
-    pub fn ay(a: char, y: usize) -> Option<Self> {
-        let x = a as usize - 96; // a goes to 1, b goes to 2 ...
-        if
-        /*0 > x ||*/
-        x > 8 {
-            // Wrong coord
-            // print!("Wrong coord!x:{};y:{},a:{}", x, y, a);
-            // std::process::exit(1);
-            return None;
-        }
-        Some(Self { x, y })
-    }
-    pub fn new(move_str: &str) -> Option<Self> {
-        let Some(first_char) = move_str.chars().nth(0) else {
-            eprintln!("Too short move sent: {move_str}");
-            std::process::exit(1);
-        };
-        let Some(second_char) = move_str.chars().nth(1) else {
-            eprintln!("Too short move sent: {move_str}");
-            std::process::exit(1);
-        };
-        // let Some(to_return) = Self::ay(first_char, second_char as usize - 48) else {
-        //     return None;
-        // };
-        let to_return = Self::ay(first_char, second_char as usize - 48)?;
-        Some(to_return)
-        // Self::ay(first_char, second_char as usize - 48)
-    }
-    pub fn zero_indexed(&self) -> (usize, usize) {
-        (self.x - 1, self.y - 1)
-    }
-}
-
-#[allow(unused)]
-impl Tile {
-    fn empty() -> Self {
-        Self { piece: None }
-    }
-    pub fn with_piece(piece: Piece) -> Self {
-        Self { piece: Some(piece) }
-    }
-}
-
-impl Piece {
-    pub fn get_piece_from_fen(piece: char) -> Self {
-        use super::defs::{Colour, PieceType};
-        let colour = if piece.is_ascii_lowercase() {
-            Colour::White
-        } else {
-            Colour::Black
-        };
-        let piece_type = match piece.to_ascii_lowercase() {
-            'k' => PieceType::King,
-            'q' => PieceType::Queen,
-            'r' => PieceType::Rook,
-            'b' => PieceType::Bishop,
-            'n' => PieceType::Knight,
-            'p' => PieceType::Pawn,
-            _ => {
-                eprintln!("No such piece: {piece}");
-                std::process::exit(0);
+use std::fmt;
+impl fmt::Display for Board {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut buf = String::new();
+        for row in self.grid.iter().rev() {
+            buf.push('\n');
+            for tile in row.iter().rev() {
+                buf.push_str(format!("{tile} ").as_str());
             }
-        };
-        Self { colour, piece_type }
-    }
-}
-
-impl PieceType {
-    fn with_colour(self, colour: Colour) -> Piece {
-        Piece {
-            piece_type: self,
-            colour,
         }
-    }
-}
-
-impl Colour {
-    fn switch(&mut self) {
-        *self = match self {
-            Self::White => Self::Black,
-            Self::Black => Self::White,
-        };
-    }
-}
-
-impl ChessMove {
-    pub fn new(start: Coord, end: Coord, promote_to: Option<PieceType>) -> Self {
-        Self {
-            start,
-            end,
-            promote_to,
+        {
+            let chess_variant = match self.variant {
+                ChessVariant::Chess => "Chess",
+                ChessVariant::Fisher => "Fisher",
+            };
+            let colour_to_play = match self.turn_to_play {
+                Colour::White => "White",
+                Colour::Black => "Black",
+            };
+            let castling_rights = format!("{:?}", self.castling_rights);
+            let en_passant_square = format!("{:?}", self.passant_square);
+            let fifty_move_rule = self.fifty_move_rule;
+            let moves = self.moves;
+            buf.push_str(format!("\nChess variant: {chess_variant}\nColour to play: {colour_to_play}\nCastling rights: {castling_rights}\nEn passant square: {en_passant_square}\nFifty move rule moves: {fifty_move_rule}\nWhole moves: {moves}\n").as_str());
         }
-    }
-    pub fn start(&self) -> Coord {
-        self.start
-    }
-    pub fn end(&self) -> Coord {
-        self.end
+        writeln!(f, "{buf}")
     }
 }

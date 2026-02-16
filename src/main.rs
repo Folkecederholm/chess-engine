@@ -6,8 +6,12 @@ mod parsing {
 }
 mod types {
     pub mod defs;
-    pub mod impls;
-    pub mod traits;
+    pub mod impls {
+        pub mod board;
+        pub mod coord;
+        pub mod piece;
+        pub mod tile;
+    }
 }
 
 mod extras {
