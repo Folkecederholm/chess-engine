@@ -91,7 +91,7 @@ impl Board {
             }
         }
         fn fen_passant(board: &mut Board, passant_fen: &str) {
-            if passant_fen == " " {
+            if passant_fen == "-" {
                 board.set_passant(None);
             } else {
                 let passant_tile = Coord::new(passant_fen);

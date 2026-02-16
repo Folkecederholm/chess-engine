@@ -41,6 +41,21 @@ impl fmt::Display for Board {
                 buf.push_str(format!("{tile} ").as_str());
             }
         }
+        {
+            let chess_variant = match self.variant {
+                ChessVariant::Chess => "Chess",
+                ChessVariant::Fisher => "Fisher",
+            };
+            let colour_to_play = match self.turn_to_play {
+                Colour::White => "White",
+                Colour::Black => "Black",
+            };
+            let castling_rights = format!("{:?}", self.castling_rights);
+            let en_passant_square = format!("{:?}", self.passant_square);
+            let fifty_move_rule = self.fifty_move_rule;
+            let moves = self.moves;
+            buf.push_str(format!("\nChess variant: {chess_variant}\nColour to play: {colour_to_play}\nCastling rights: {castling_rights}\nEn passant square: {en_passant_square}\nFifty move rule moves: {fifty_move_rule}\nWhole moves: {moves}\n").as_str());
+        }
         writeln!(f, "{buf}")
     }
 }

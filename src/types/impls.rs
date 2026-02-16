@@ -65,7 +65,6 @@ impl Board {
 }
 
 impl Coord {
-    #[allow(unused)]
     pub fn xy(x: usize, y: usize) -> Self {
         Self { x, y }
     }
@@ -83,11 +82,11 @@ impl Coord {
     }
     pub fn new(move_str: &str) -> Option<Self> {
         let Some(first_char) = move_str.chars().nth(0) else {
-            eprintln!("Too short move sent");
+            eprintln!("Too short move sent: {move_str}");
             std::process::exit(1);
         };
         let Some(second_char) = move_str.chars().nth(1) else {
-            eprintln!("Too short move sent");
+            eprintln!("Too short move sent: {move_str}");
             std::process::exit(1);
         };
         // let Some(to_return) = Self::ay(first_char, second_char as usize - 48) else {
