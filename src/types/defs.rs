@@ -19,7 +19,7 @@ pub struct CastlingRights {
     pub(super) castling_rights: [Option<Coord>; 4],
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Coord {
     pub(super) x: usize,
     pub(super) y: usize,

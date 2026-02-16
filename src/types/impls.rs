@@ -16,7 +16,9 @@ impl Board {
         }
     }
     pub fn make_move(&mut self, start: Coord, end: Coord, promote_to: Option<Promotion>) {
+        println!("start: {start:?}, end: {end:?}");
         make_physical_move(self, start, end, promote_to);
+        update_pasant_square(self, start, end);
         switch_colours(self);
         update_whole_moves(self); // Run after make_physical_move()
         // INNER FNS
@@ -26,20 +28,61 @@ impl Board {
             end: Coord,
             promote_to: Option<Promotion>,
         ) {
+            // Check for moving empty piece
             let moved_option = board.grid[start.y][start.x].piece;
-            if let Some(moved_piece) = moved_option {
-                board.grid[end.y][end.x].piece = Some(
-                    // If there is a promotion
-                    if let Some(promote_piece) = promote_to {
-                        promote_piece.piece().with_colour(board.turn_to_play)
-                    } else {
-                        moved_piece
-                    },
-                );
-                board.grid[start.y][start.x].piece = None;
-            } else {
+            let Some(moved_piece) = moved_option else {
                 eprintln!("Tried to move an empty piece!");
                 std::process::exit(1);
+            };
+            // Check for promotion
+            let moving_piece = Some(
+                // If there is a promotion
+                if let Some(promote_piece) = promote_to {
+                    promote_piece.piece().with_colour(board.turn_to_play)
+                } else {
+                    moved_piece
+                },
+            );
+            check_for_passant(board, start, end);
+            board.grid[end.y][end.x].piece = moving_piece;
+            board.grid[start.y][start.x].piece = None;
+            // INNER FNS
+            fn check_for_passant(board: &mut Board, _start: Coord, end: Coord) {
+                if end == board.passant_square.unwrap_or(Coord { x: 9, y: 9 }) {
+                    println!("Doing en passant!");
+                    // Remove the captured piece
+                    let offset = match board.turn_to_play {
+                        Colour::White => -1,
+                        Colour::Black => 1,
+                    };
+                    // Casting usize to isize is OK since 0 <= start.y <= 7
+                    // Castling isize to usize is OK since en passant never happens on the first rank
+                    // If en passant happens on the first rank, this is UB
+                    #[allow(clippy::cast_possible_wrap, clippy::cast_sign_loss)]
+                    {
+                        assert!(end.y <= 7);
+                        assert!(end.y as isize + offset > 0);
+                        println!(
+                            "end.y: {}\n(end.y as isize + offset) as usize: {}\nend.x: {}",
+                            end.y,
+                            (end.y as isize + offset) as usize,
+                            end.x
+                        );
+                        board.grid[(end.y as isize + offset) as usize][end.x].piece = None;
+                    }
+                }
+            }
+        }
+        fn update_pasant_square(board: &mut Board, start: Coord, end: Coord) {
+            // Check for pawn double move
+            let y_diff = start.y.abs_diff(end.y);
+            // And if there is a double move, set the en passant tile to the skipped tile
+            if y_diff == 2 {
+                let skipped_tile = Coord {
+                    x: start.x,
+                    y: usize::midpoint(start.y, end.y),
+                };
+                board.set_passant(Some(skipped_tile));
             }
         }
         fn switch_colours(board: &mut Board) {
