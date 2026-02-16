@@ -28,6 +28,14 @@ impl Board {
             exit!("Invalid FEN!");
         };
         fen_passant(self, passant_fen);
+        let Some(fifty_move_rule_fen) = split.next() else {
+            exit!("Invalid FEN!");
+        };
+        fen_fifty_move_rule(self, fifty_move_rule_fen);
+        let Some(whole_move_fen) = split.next() else {
+            exit!("Invalid FEN!");
+        };
+        fen_whole_moves(self, whole_move_fen);
         // INNER FNS
         fn fen_board_state(board: &mut Board, pieces_fen: &str) {
             let rows = pieces_fen.split('/');
@@ -89,6 +97,22 @@ impl Board {
                 let passant_tile = Coord::new(passant_fen);
                 board.set_passant(passant_tile);
             }
+        }
+        fn fen_fifty_move_rule(board: &mut Board, fifty_move_rule_fen: &str) {
+            let moves: Result<u32, _> = fifty_move_rule_fen.parse();
+            let moves = match moves {
+                Ok(n) => n,
+                Err(e) => exit!("{e}"),
+            };
+            board.set_fifty_moves(moves);
+        }
+        fn fen_whole_moves(board: &mut Board, whole_move_fen: &str) {
+            let moves: Result<u32, _> = whole_move_fen.parse();
+            let moves = match moves {
+                Ok(n) => n,
+                Err(e) => exit!("{e}"),
+            };
+            board.set_whole_moves(moves);
         }
     }
 }

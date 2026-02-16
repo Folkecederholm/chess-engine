@@ -56,6 +56,12 @@ impl Board {
     pub fn set_passant(&mut self, tile: Option<Coord>) {
         self.passant_square = tile;
     }
+    pub fn set_fifty_moves(&mut self, moves: u32) {
+        self.fifty_move_rule = moves;
+    }
+    pub fn set_whole_moves(&mut self, moves: u32) {
+        self.moves = moves;
+    }
 }
 
 impl Coord {
