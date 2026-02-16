@@ -37,7 +37,7 @@ pub struct Piece {
     pub(super) piece_type: PieceType,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum Colour {
     White,
     Black,
@@ -51,4 +51,11 @@ pub(super) enum PieceType {
     Bishop,
     Knight,
     Pawn,
+}
+
+pub enum Promotion {
+    Queen,
+    Rook,
+    Bishop,
+    Knight,
 }

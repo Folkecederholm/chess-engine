@@ -15,15 +15,41 @@ impl Board {
             },
         }
     }
-    pub fn make_move(&mut self, start: Coord, end: Coord) {
-        let moved_option = self.grid[start.y][start.x].piece;
-        println!("self: {self}");
-        if let Some(moved_piece) = moved_option {
-            self.grid[end.y][end.x].piece = Some(moved_piece);
-            self.grid[start.y][start.x].piece = None;
-        } else {
-            eprintln!("Tried to move an empty piece!");
-            std::process::exit(1);
+    pub fn make_move(&mut self, start: Coord, end: Coord, promote_to: Option<Promotion>) {
+        make_physical_move(self, start, end, promote_to);
+        switch_colours(self);
+        update_whole_moves(self); // Run after make_physical_move()
+        // INNER FNS
+        fn make_physical_move(
+            board: &mut Board,
+            start: Coord,
+            end: Coord,
+            promote_to: Option<Promotion>,
+        ) {
+            let moved_option = board.grid[start.y][start.x].piece;
+            if let Some(moved_piece) = moved_option {
+                board.grid[end.y][end.x].piece = Some(
+                    // If there is a promotion
+                    if let Some(promote_piece) = promote_to {
+                        promote_piece.piece().with_colour(board.turn_to_play)
+                    } else {
+                        moved_piece
+                    },
+                );
+                board.grid[start.y][start.x].piece = None;
+            } else {
+                eprintln!("Tried to move an empty piece!");
+                std::process::exit(1);
+            }
+        }
+        fn switch_colours(board: &mut Board) {
+            board.turn_to_play.switch();
+        }
+        fn update_whole_moves(board: &mut Board) {
+            // This checks if it's white's turn since it's run after make_physical_move()
+            if board.turn_to_play == Colour::White {
+                board.increment_whole_moves();
+            }
         }
     }
     pub fn set_piece(&mut self, coord: Coord, piece: Piece) {
@@ -62,6 +88,9 @@ impl Board {
     }
     pub fn set_whole_moves(&mut self, moves: u32) {
         self.moves = moves;
+    }
+    pub fn increment_whole_moves(&mut self) {
+        self.moves += 1;
     }
 }
 
@@ -130,5 +159,34 @@ impl Piece {
             }
         };
         Self { colour, piece_type }
+    }
+}
+
+impl Promotion {
+    fn piece(&self) -> PieceType {
+        match self {
+            Self::Queen => PieceType::Queen,
+            Self::Rook => PieceType::Rook,
+            Self::Bishop => PieceType::Bishop,
+            Self::Knight => PieceType::Knight,
+        }
+    }
+}
+
+impl PieceType {
+    fn with_colour(self, colour: Colour) -> Piece {
+        Piece {
+            piece_type: self,
+            colour,
+        }
+    }
+}
+
+impl Colour {
+    fn switch(&mut self) {
+        *self = match self {
+            Self::White => Self::Black,
+            Self::Black => Self::White,
+        };
     }
 }
