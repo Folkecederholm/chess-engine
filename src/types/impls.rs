@@ -15,39 +15,31 @@ impl Board {
             },
         }
     }
-    pub fn make_move(&mut self, start: Coord, end: Coord, promote_to: Option<Promotion>) {
-        println!("start: {start:?}, end: {end:?}");
-        make_physical_move(self, start, end, promote_to);
-        update_pasant_square(self, start, end);
+    pub fn make_move(&mut self, chess_move: ChessMove) {
+        make_physical_move(self, chess_move);
+        // update_pasant_square(self, chess_move);
         switch_colours(self);
         update_whole_moves(self); // Run after make_physical_move()
         // INNER FNS
-        fn make_physical_move(
-            board: &mut Board,
-            start: Coord,
-            end: Coord,
-            promote_to: Option<Promotion>,
-        ) {
+        fn make_physical_move(board: &mut Board, chess_move: ChessMove) {
             // Check for moving empty piece
-            let moved_option = board.grid[start.y][start.x].piece;
-            let Some(moved_piece) = moved_option else {
-                eprintln!("Tried to move an empty piece!");
+            let start_tile = board.get_tile(chess_move.start());
+            let Some(moved_piece) = start_tile.piece else {
+                eprintln!("Tried to move an empty piece: {chess_move:?}");
                 std::process::exit(1);
             };
             // Check for promotion
-            let moving_piece = Some(
-                // If there is a promotion
-                if let Some(promote_piece) = promote_to {
-                    promote_piece.piece().with_colour(board.turn_to_play)
-                } else {
-                    moved_piece
-                },
-            );
-            check_for_passant(board, start, end);
-            board.grid[end.y][end.x].piece = moving_piece;
-            board.grid[start.y][start.x].piece = None;
+            let moving_piece = if let Some(promote_piece) = chess_move.promote_to {
+                promote_piece.with_colour(board.turn_to_play)
+            } else {
+                moved_piece
+            };
+            // check_for_passant(board, chess_move);
+            board.set_piece(chess_move.end(), moving_piece);
+            board.remove_piece(chess_move.start());
             // INNER FNS
-            fn check_for_passant(board: &mut Board, _start: Coord, end: Coord) {
+            /*
+            fn check_for_passant(board: &mut Board, chess_move: ChessMove) {
                 if end == board.passant_square.unwrap_or(Coord { x: 9, y: 9 }) {
                     println!("Doing en passant!");
                     // Remove the captured piece
@@ -72,8 +64,10 @@ impl Board {
                     }
                 }
             }
+            */
         }
-        fn update_pasant_square(board: &mut Board, start: Coord, end: Coord) {
+        /*
+        fn update_pasant_square(board: &mut Board, chess_move: ChessMove) {
             // Check for pawn double move
             let y_diff = start.y.abs_diff(end.y);
             // And if there is a double move, set the en passant tile to the skipped tile
@@ -85,6 +79,7 @@ impl Board {
                 board.set_passant(Some(skipped_tile));
             }
         }
+        */
         fn switch_colours(board: &mut Board) {
             board.turn_to_play.switch();
         }
@@ -96,7 +91,8 @@ impl Board {
         }
     }
     pub fn set_piece(&mut self, coord: Coord, piece: Piece) {
-        self.grid[coord.x][coord.y] = Tile { piece: Some(piece) };
+        // self.grid[coord.x][coord.y] = Tile { piece: Some(piece) };
+        self.grid[coord.zero_indexed().1][coord.zero_indexed().0] = Tile { piece: Some(piece) };
     }
     // pub fn print(&self) {}
     pub fn drain(&mut self) {
@@ -135,6 +131,12 @@ impl Board {
     pub fn increment_whole_moves(&mut self) {
         self.moves += 1;
     }
+    pub fn get_tile(&self, coord: Coord) -> Tile {
+        self.grid[coord.zero_indexed().1][coord.zero_indexed().0]
+    }
+    pub fn remove_piece(&mut self, coord: Coord) {
+        self.grid[coord.zero_indexed().1][coord.zero_indexed().0] = Tile { piece: None };
+    }
 }
 
 impl Coord {
@@ -142,10 +144,10 @@ impl Coord {
         Self { x, y }
     }
     pub fn ay(a: char, y: usize) -> Option<Self> {
-        let x = a as usize - 97; // a goes to 0, b goes to 1 ...
+        let x = a as usize - 96; // a goes to 1, b goes to 2 ...
         if
         /*0 > x ||*/
-        x > 7 {
+        x > 8 {
             // Wrong coord
             // print!("Wrong coord!x:{};y:{},a:{}", x, y, a);
             // std::process::exit(1);
@@ -165,9 +167,12 @@ impl Coord {
         // let Some(to_return) = Self::ay(first_char, second_char as usize - 48) else {
         //     return None;
         // };
-        let to_return = Self::ay(first_char, second_char as usize - 49)?; // -49 because it's zero-indexed
+        let to_return = Self::ay(first_char, second_char as usize - 48)?;
         Some(to_return)
         // Self::ay(first_char, second_char as usize - 48)
+    }
+    pub fn zero_indexed(&self) -> (usize, usize) {
+        (self.x - 1, self.y - 1)
     }
 }
 
@@ -205,17 +210,6 @@ impl Piece {
     }
 }
 
-impl Promotion {
-    fn piece(&self) -> PieceType {
-        match self {
-            Self::Queen => PieceType::Queen,
-            Self::Rook => PieceType::Rook,
-            Self::Bishop => PieceType::Bishop,
-            Self::Knight => PieceType::Knight,
-        }
-    }
-}
-
 impl PieceType {
     fn with_colour(self, colour: Colour) -> Piece {
         Piece {
@@ -231,5 +225,21 @@ impl Colour {
             Self::White => Self::Black,
             Self::Black => Self::White,
         };
+    }
+}
+
+impl ChessMove {
+    pub fn new(start: Coord, end: Coord, promote_to: Option<PieceType>) -> Self {
+        Self {
+            start,
+            end,
+            promote_to,
+        }
+    }
+    pub fn start(&self) -> Coord {
+        self.start
+    }
+    pub fn end(&self) -> Coord {
+        self.end
     }
 }

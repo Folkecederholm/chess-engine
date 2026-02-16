@@ -21,6 +21,7 @@ pub struct CastlingRights {
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Coord {
+    // These are 1-indexed
     pub(super) x: usize,
     pub(super) y: usize,
 }
@@ -30,21 +31,21 @@ pub struct Tile {
     pub(super) piece: Option<Piece>,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 //This needs to be public to construct an Option<Piece>
 pub struct Piece {
     pub(super) colour: Colour,
     pub(super) piece_type: PieceType,
 }
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub enum Colour {
     White,
     Black,
 }
 
-#[derive(Clone, Copy)]
-pub(super) enum PieceType {
+#[derive(Clone, Copy, Debug)]
+pub enum PieceType {
     King,
     Queen,
     Rook,
@@ -53,9 +54,10 @@ pub(super) enum PieceType {
     Pawn,
 }
 
-pub enum Promotion {
-    Queen,
-    Rook,
-    Bishop,
-    Knight,
+#[derive(Clone, Copy, Debug)]
+pub struct ChessMove {
+    // These are 1-indexed
+    pub(super) start: Coord,
+    pub(super) end: Coord,
+    pub(super) promote_to: Option<PieceType>,
 }

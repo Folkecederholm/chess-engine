@@ -39,15 +39,15 @@ impl Board {
         // INNER FNS
         fn fen_board_state(board: &mut Board, pieces_fen: &str) {
             let rows = pieces_fen.split('/');
-            for (x, row) in rows.enumerate() {
+            for (y, row) in rows.enumerate() {
                 let mut row_iter = row.chars().enumerate();
                 while let Some(tuple) = row_iter.next() {
-                    let (y, piece) = tuple;
+                    let (x, piece) = tuple;
                     if piece.is_ascii_digit() {
                         row_iter.nth(piece.to_digit(10).unwrap() as usize);
                     } else {
                         let piece_to_add = Piece::get_piece_from_fen(piece);
-                        board.set_piece(Coord::xy(x, y), piece_to_add);
+                        board.set_piece(Coord::xy(x + 1, y + 1), piece_to_add);
                     }
                 }
             }
