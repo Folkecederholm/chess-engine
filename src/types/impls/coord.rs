@@ -1,3 +1,4 @@
+#![allow(clippy::unused_self)]
 use crate::types::defs::*;
 
 impl Coord {
@@ -50,5 +51,37 @@ impl ChessMove {
     }
     pub fn end(&self) -> Coord {
         self.end
+    }
+    pub fn move_events(&self, board: &Board) -> MoveEvents {
+        MoveEvents {
+            moved_piece: (self.moved_piece(board)),
+            player_colour: (self.player_colour(board)),
+            taken_piece: (self.taken_piece(board)),
+            draw: (self.draw(board)),
+        }
+    }
+    fn moved_piece(&self, board: &Board) -> Piece {
+        let Tile { piece: Some(moved) } = board.get_tile(self.start()) else {
+            eprintln!("Move tries to move nothing!");
+            std::process::exit(1);
+        };
+        moved
+    }
+    fn player_colour(&self, board: &Board) -> Colour {
+        let mut colour = board.turn_to_play;
+        colour.switch();
+        colour
+    }
+    fn taken_piece(&self, board: &Board) -> Option<Piece> {
+        board.get_tile(self.end()).piece
+    }
+    fn draw(&self, board: &Board) -> bool {
+        self.fifty_move_rule_draw(board)
+    }
+    fn fifty_move_rule_draw(&self, board: &Board) -> bool {
+        let one_move_left = board.fifty_move_rule == 49;
+        let piece_taken = self.move_events(board).taken_piece.is_some();
+        let pawn_moved = self.move_events(board).moved_piece.piece_type == PieceType::Pawn;
+        one_move_left && !(piece_taken || pawn_moved)
     }
 }

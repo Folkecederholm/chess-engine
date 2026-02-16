@@ -20,6 +20,7 @@ impl Board {
         update_pasant_square(self, chess_move);
         switch_colours(self);
         update_whole_moves(self); // Run after make_physical_move()
+        update_fifty_move_rule(self, chess_move);
         // INNER FNS
         fn make_physical_move(board: &mut Board, chess_move: ChessMove) {
             // Check for moving empty piece
@@ -75,6 +76,14 @@ impl Board {
             // This checks if it's white's turn since it's run after make_physical_move()
             if board.turn_to_play == Colour::White {
                 board.increment_whole_moves();
+            }
+        }
+        fn update_fifty_move_rule(board: &mut Board, chess_move: ChessMove) {
+            let events = chess_move.move_events(board);
+            if events.taken_piece.is_some() {
+                board.fifty_move_rule = 0;
+            } else {
+                board.fifty_move_rule += 1;
             }
         }
     }
