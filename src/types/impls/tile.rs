@@ -39,4 +39,7 @@ impl Tile {
     pub fn with_piece(piece: Piece) -> Self {
         Self { piece: Some(piece) }
     }
+    pub fn get_piece(self) -> Option<Piece> {
+        self.piece
+    }
 }

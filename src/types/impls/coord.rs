@@ -36,6 +36,9 @@ impl Coord {
     pub fn zero_indexed(&self) -> (usize, usize) {
         (self.x - 1, self.y - 1)
     }
+    pub fn as_tuple(&self) -> (usize, usize) {
+        (self.x, self.y)
+    }
 }
 
 #[allow(unused)]

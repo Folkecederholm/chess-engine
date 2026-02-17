@@ -1,4 +1,6 @@
-use crate::types::defs::Board;
+mod find_moves {
+    pub mod special;
+}
 
 mod parsing {
     pub mod fen;
@@ -19,6 +21,7 @@ mod extras {
     pub mod macros;
 }
 
+use crate::types::defs::Board;
 fn main() {
     let mut input = String::new();
     let mut board = Board::empty();

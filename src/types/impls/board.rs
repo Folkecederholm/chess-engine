@@ -147,6 +147,12 @@ impl Board {
     pub fn remove_piece(&mut self, coord: Coord) {
         self.grid[coord.zero_indexed().1][coord.zero_indexed().0] = Tile { piece: None };
     }
+    pub fn get_castling_rights(&self) -> [Option<Coord>; 4] {
+        self.castling_rights.castling_rights
+    }
+    pub fn get_colour_turn(&self) -> Colour {
+        self.turn_to_play
+    }
 }
 
 use std::fmt;

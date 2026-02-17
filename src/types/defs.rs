@@ -14,7 +14,7 @@ pub enum ChessVariant {
     Fisher,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct CastlingRights {
     pub(super) castling_rights: [Option<Coord>; 4],
 }
@@ -26,7 +26,7 @@ pub struct Coord {
     pub(super) y: usize,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Tile {
     pub(super) piece: Option<Piece>,
 }

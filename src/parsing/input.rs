@@ -53,6 +53,9 @@ pub fn parse_user_input(input: &str, board: &mut Board) {
                 // board.print();
                 print!("{board}");
             }
+            "castling" => {
+                println!("{:?}", board.find_castling_moves())
+            }
             _ => {
                 wrongly_called();
             }
