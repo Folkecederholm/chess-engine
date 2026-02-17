@@ -65,20 +65,20 @@ impl Board {
         */
         fn fen_board_state(board: &mut Board, pieces_fen: &str) -> Result<(), &'static str> {
             let rows = pieces_fen.split('/');
-            for (y0, row) in rows.enumerate() {
+            for (y0, row) in rows.rev().enumerate() {
                 let y = y0 + 1;
-                let mut row_iter = row.chars();
-                let mut x = 1;
+                let mut row_iter = row.chars().rev();
+                let mut x = 8;
                 while let Some(piece_ascii) = row_iter.next() {
                     if piece_ascii.is_ascii_digit() {
                         // .unwrap() is safe since we've already checked it's a digit
                         // row_iter.next();
-                        x += piece_ascii.to_digit(10).unwrap() as usize - 1;
+                        x -= piece_ascii.to_digit(10).unwrap() as usize - 1;
                     } else {
                         let piece = Piece::get_piece_from_fen(piece_ascii)?;
                         board.set_piece(Coord::xy(x, y), piece)?;
                     }
-                    x += 1;
+                    x -= 1;
                 }
             }
             Ok(())
