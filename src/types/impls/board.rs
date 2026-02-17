@@ -15,19 +15,25 @@ impl Board {
             },
         }
     }
-    pub fn make_move(&mut self, chess_move: ChessMove) {
+    pub fn make_move(&mut self, chess_move: ChessMove) -> Result<(), &'static str> {
+        if chess_move.is_castling(self) {
+            println!("CASTLING!!!");
+        }
         update_fifty_move_rule(self, chess_move); // Run before make_physical_move()
-        make_physical_move(self, chess_move);
+        make_physical_move(self, chess_move)?;
         update_pasant_square(self, chess_move);
         switch_colours(self);
         update_whole_moves(self); // Run after make_physical_move()
+        return Ok(());
         // INNER FNS
-        fn make_physical_move(board: &mut Board, chess_move: ChessMove) {
+        fn make_physical_move(
+            board: &mut Board,
+            chess_move: ChessMove,
+        ) -> Result<(), &'static str> {
             // Check for moving empty piece
             let start_tile = board.get_tile(chess_move.start());
             let Some(moved_piece) = start_tile.piece else {
-                eprintln!("Tried to move an empty piece: {chess_move:?}");
-                std::process::exit(1);
+                return Err("Tried to move a tile without a piece!");
             };
             // Check for promotion
             let moving_piece = if let Some(promote_piece) = chess_move.promote_to {
@@ -36,7 +42,7 @@ impl Board {
                 moved_piece
             };
             check_for_passant(board, chess_move);
-            board.set_piece(chess_move.end(), moving_piece);
+            board.set_piece(chess_move.end(), moving_piece)?;
             board.remove_piece(chess_move.start());
             // INNER FNS
             fn check_for_passant(board: &mut Board, chess_move: ChessMove) {
@@ -56,6 +62,7 @@ impl Board {
                     board.remove_piece(captured_tile);
                 }
             }
+            Ok(())
         }
         fn update_pasant_square(board: &mut Board, chess_move: ChessMove) {
             // Check for pawn double move
@@ -88,9 +95,14 @@ impl Board {
             }
         }
     }
-    pub fn set_piece(&mut self, coord: Coord, piece: Piece) {
+    pub fn set_piece(&mut self, coord: Coord, piece: Piece) -> Result<(), &'static str> {
         // self.grid[coord.x][coord.y] = Tile { piece: Some(piece) };
+        if coord.x > 8 || coord.y > 8 {
+            dbg!(coord.x, coord.y);
+            return Err("Coord out of bounds!");
+        }
         self.grid[coord.zero_indexed().1][coord.zero_indexed().0] = Tile { piece: Some(piece) };
+        Ok(())
     }
     // pub fn print(&self) {}
     pub fn drain(&mut self) {

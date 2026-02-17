@@ -73,10 +73,25 @@ impl ChessMove {
     pub fn draw(&self, board: &Board) -> bool {
         self.fifty_move_rule_draw(board)
     }
+    // This belongs to the draw() method -------v
     fn fifty_move_rule_draw(&self, board: &Board) -> bool {
         let one_move_left = board.fifty_move_rule == 49;
         let piece_taken = self.taken_piece(board).is_some();
         let pawn_moved = self.moved_piece(board).piece_type == PieceType::Pawn;
         one_move_left && !(piece_taken || pawn_moved)
+    }
+    // This is free territory----------^
+    pub fn is_castling(&self, board: &Board) -> bool {
+        let moved_piece = self.moved_piece(board);
+        if board
+            .castling_rights
+            .castling_rights
+            .contains(&Some(self.end()))
+            && moved_piece.piece_type == PieceType::King
+        {
+            true
+        } else {
+            false
+        }
     }
 }

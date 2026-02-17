@@ -7,7 +7,13 @@ impl Board {
             // println!("{single_move}");
             let chess_move = parse_single_move(single_move);
             // println!("start: {start:?}, end: {end:?}");
-            self.make_move(chess_move);
+            match self.make_move(chess_move) {
+                Ok(()) => {}
+                Err(e) => {
+                    eprintln!("{e}");
+                    std::process::exit(1);
+                }
+            }
         }
         fn parse_single_move(single_move: &str) -> ChessMove {
             let Some(start) = Coord::new(single_move) else {

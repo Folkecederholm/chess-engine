@@ -105,6 +105,8 @@ fn parse_user_input(input: &str, board: &mut Board) {
                         let mut trace_moves = input_tokens.split_off(fen_end);
                         board.go_to_fen(input_tokens.split_off(1).join(" ").as_str());
                         board.trace_moves(trace_moves.split_off(1));
+                    } else {
+                        board.go_to_fen(input_tokens.split_off(1).join(" ").as_str());
                     }
                 }
                 "default" => {

@@ -1,12 +1,14 @@
 use crate::types::defs::*;
 
 impl Piece {
-    pub fn get_piece_from_fen(piece: char) -> Self {
+    pub fn get_piece_from_fen(piece: char) -> Result<Self, &'static str> {
         use crate::types::defs::{Colour, PieceType};
         let colour = if piece.is_ascii_lowercase() {
+            Colour::Black
+        } else if piece.is_ascii_uppercase() {
             Colour::White
         } else {
-            Colour::Black
+            return Err("Parse error in FEN: invalid piece");
         };
         let piece_type = match piece.to_ascii_lowercase() {
             'k' => PieceType::King,
@@ -16,11 +18,10 @@ impl Piece {
             'n' => PieceType::Knight,
             'p' => PieceType::Pawn,
             _ => {
-                eprintln!("No such piece: {piece}");
-                std::process::exit(0);
+                return Err("Parse error in FEN: invalid piece");
             }
         };
-        Self { colour, piece_type }
+        Ok(Self { colour, piece_type })
     }
 }
 

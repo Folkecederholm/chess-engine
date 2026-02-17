@@ -15,7 +15,13 @@ impl Board {
         let Some(pieces_fen) = split.next() else {
             exit!("Invalid FEN!");
         };
-        fen_board_state(self, pieces_fen);
+        match fen_board_state(self, pieces_fen) {
+            Ok(()) => {}
+            Err(e) => {
+                eprintln!("{e}");
+                std::process::exit(1);
+            }
+        }
         let Some(colour_fen) = split.next() else {
             exit!("Invalid FEN!");
         };
@@ -37,7 +43,9 @@ impl Board {
         };
         fen_whole_moves(self, whole_move_fen);
         // INNER FNS
+        /*
         fn fen_board_state(board: &mut Board, pieces_fen: &str) {
+            dbg!(pieces_fen);
             let rows = pieces_fen.split('/');
             for (y, row) in rows.enumerate() {
                 let mut row_iter = row.chars().enumerate();
@@ -48,9 +56,32 @@ impl Board {
                     } else {
                         let piece_to_add = Piece::get_piece_from_fen(piece);
                         board.set_piece(Coord::xy(x + 1, y + 1), piece_to_add);
+                        println!("Putting piece {piece_to_add:?} on tile with x={x} and y={y}!");
+                        println!("Because of piece={piece}");
                     }
                 }
             }
+        }
+        */
+        fn fen_board_state(board: &mut Board, pieces_fen: &str) -> Result<(), &'static str> {
+            let rows = pieces_fen.split('/');
+            for (y0, row) in rows.enumerate() {
+                let y = y0 + 1;
+                let mut row_iter = row.chars();
+                let mut x = 1;
+                while let Some(piece_ascii) = row_iter.next() {
+                    if piece_ascii.is_ascii_digit() {
+                        // .unwrap() is safe since we've already checked it's a digit
+                        // row_iter.next();
+                        x += piece_ascii.to_digit(10).unwrap() as usize - 1;
+                    } else {
+                        let piece = Piece::get_piece_from_fen(piece_ascii)?;
+                        board.set_piece(Coord::xy(x, y), piece)?;
+                    }
+                    x += 1;
+                }
+            }
+            Ok(())
         }
         fn fen_colour(board: &mut Board, colour_fen: &str) {
             board.set_to_move(match colour_fen {
