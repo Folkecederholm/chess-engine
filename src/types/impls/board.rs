@@ -16,11 +16,11 @@ impl Board {
         }
     }
     pub fn make_move(&mut self, chess_move: ChessMove) {
+        update_fifty_move_rule(self, chess_move); // Run before make_physical_move()
         make_physical_move(self, chess_move);
         update_pasant_square(self, chess_move);
         switch_colours(self);
         update_whole_moves(self); // Run after make_physical_move()
-        update_fifty_move_rule(self, chess_move);
         // INNER FNS
         fn make_physical_move(board: &mut Board, chess_move: ChessMove) {
             // Check for moving empty piece
@@ -79,8 +79,9 @@ impl Board {
             }
         }
         fn update_fifty_move_rule(board: &mut Board, chess_move: ChessMove) {
-            let events = chess_move.move_events(board);
-            if events.taken_piece.is_some() {
+            let taken_piece = chess_move.taken_piece(board);
+            let moved_piece = chess_move.moved_piece(board);
+            if taken_piece.is_some() || moved_piece.piece_type == PieceType::Pawn {
                 board.fifty_move_rule = 0;
             } else {
                 board.fifty_move_rule += 1;

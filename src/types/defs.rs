@@ -61,10 +61,3 @@ pub struct ChessMove {
     pub(super) end: Coord,
     pub(super) promote_to: Option<PieceType>,
 }
-
-pub struct MoveEvents {
-    pub moved_piece: Piece,
-    pub player_colour: Colour,
-    pub taken_piece: Option<Piece>,
-    pub draw: bool,
-}
