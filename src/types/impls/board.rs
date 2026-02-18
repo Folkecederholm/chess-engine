@@ -19,6 +19,7 @@ impl Board {
         update_fifty_move_rule(self, chess_move); // Run before make_physical_move()
         if chess_move.is_castling(self) {
             make_castling_move(self, chess_move)?;
+            self.remove_castling_rights_just_played();
         } else {
             make_physical_move(self, chess_move)?;
         }
@@ -177,6 +178,38 @@ impl Board {
     }
     pub fn get_colour_turn(&self) -> Colour {
         self.turn_to_play
+    }
+    pub fn remove_castling_rights_just_played(&mut self) {
+        let rank = match self.get_colour_turn() {
+            // Switched because we want the colour that just played
+            // Not switched because it works like that
+            Colour::White => 1,
+            Colour::Black => 8,
+        };
+        for x in 1..8 {
+            self.remove_castling_rights_coord(Coord::xy(x, rank));
+        }
+    }
+    pub fn remove_castling_rights_coord(&mut self, coord: Coord) {
+        // Feels tautological
+        let castling_rights = self.castling_rights.castling_rights;
+        // let mut new_castling_rights: [Option<Coord>; 4] = [None; 4];
+        let mut new_castling_rights = castling_rights.clone();
+        let mut colour = self.turn_to_play;
+        colour.switch();
+        let mut i = 0;
+        for right in castling_rights {
+            let Some(castling_right) = right else {
+                continue;
+            };
+            // If it's the coord we want to remove
+            if castling_right == coord {
+                // new_castling_rights[i] = Some(castling_right);
+                new_castling_rights[i] = None;
+            }
+            i += 1;
+        }
+        self.set_castling(new_castling_rights);
     }
 }
 
