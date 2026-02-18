@@ -1,4 +1,6 @@
 mod find_moves {
+    pub mod all_moves;
+    pub mod pieces;
     pub mod special;
 }
 

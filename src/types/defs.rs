@@ -22,8 +22,8 @@ pub struct CastlingRights {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Coord {
     // These are 1-indexed
-    pub(super) x: usize,
-    pub(super) y: usize,
+    pub x: usize,
+    pub y: usize,
 }
 
 #[derive(Clone, Copy, Debug)]

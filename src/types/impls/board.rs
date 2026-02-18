@@ -211,6 +211,9 @@ impl Board {
         }
         self.set_castling(new_castling_rights);
     }
+    pub fn get_passant_square(&self) -> Option<Coord> {
+        self.passant_square
+    }
 }
 
 use std::fmt;
