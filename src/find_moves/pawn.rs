@@ -21,37 +21,6 @@ impl Board {
 }
 
 impl Board {
-    /*
-    pub fn find_pawn_moves(&self, coord: Coord) -> Vec<ChessMove> {
-        let mut found_moves = vec![];
-        let forward_function = match self.get_colour_turn() {
-            Colour::White => usize::checked_add,
-            Colour::Black => usize::checked_sub,
-        };
-        let Some(new_y) = forward_function(coord.y, 1) else {
-            return vec![];
-        };
-        if new_y == 0 {
-            return vec![];
-        };
-        if self.tile_is_empty(coord.x, new_y) {
-            // Add move
-            found_moves.push(ChessMove::new(coord, Coord::xy(coord.x, new_y), None));
-            // Look for double pawn move
-            let starting_rank = match self.get_colour_turn() {
-                Colour::White => 2,
-                Colour::Black => 7,
-            };
-            let Some(new_new_y) = forward_function(coord.y, 2) else {
-                unreachable!()
-            };
-            if coord.y == starting_rank && self.tile_is_empty(coord.x, new_new_y) {
-                found_moves.push(ChessMove::new(coord, Coord::xy(coord.x, new_new_y), None));
-            }
-        };
-        return found_moves;
-    }
-    */
     pub fn find_pawn_moves(&self, coord: Coord) -> Vec<ChessMove> {
         if !legal_pawn(coord) {
             return vec![];
@@ -71,7 +40,11 @@ impl Board {
             ));
             // Only check for double move if a single move is possible
             let two_tiles_forward = forward_function(coord.y, 2).unwrap();
-            if self.tile_is_empty(coord.x, two_tiles_forward) {
+            let starting_rank = match self.get_colour_turn() {
+                Colour::White => 2,
+                Colour::Black => 7,
+            };
+            if self.tile_is_empty(coord.x, two_tiles_forward) && coord.y == starting_rank {
                 found_moves.push(ChessMove::new(
                     coord,
                     Coord::xy(coord.x, two_tiles_forward),

@@ -20,6 +20,13 @@ impl Board {
                 };
             }
         }
+        // Add castling moves to found moves
+        let mut castling_moves = self
+            .find_castling_moves()
+            .into_iter()
+            .map(|x| x.0)
+            .collect::<Vec<ChessMove>>();
+        moves.append(&mut castling_moves);
         return moves;
     }
 }
