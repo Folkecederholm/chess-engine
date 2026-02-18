@@ -98,7 +98,6 @@ impl Board {
     pub fn set_piece(&mut self, coord: Coord, piece: Piece) -> Result<(), &'static str> {
         // self.grid[coord.x][coord.y] = Tile { piece: Some(piece) };
         if coord.x > 8 || coord.y > 8 {
-            dbg!(coord.x, coord.y);
             return Err("Coord out of bounds!");
         }
         self.grid[coord.zero_indexed().1][coord.zero_indexed().0] = Tile { piece: Some(piece) };

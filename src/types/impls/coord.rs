@@ -85,16 +85,17 @@ impl ChessMove {
     }
     // This is free territory----------^
     pub fn is_castling(&self, board: &Board) -> bool {
-        let moved_piece = self.moved_piece(board);
-        if board
-            .castling_rights
-            .castling_rights
-            .contains(&Some(self.end()))
-            && moved_piece.piece_type == PieceType::King
-        {
-            true
-        } else {
-            false
-        }
+        // let castling_moves = board.find_castling_moves();
+        // castling_moves.contains(self)
+        // This move is to the king's destination square
+        // Let's check instead if the king moves more than one square
+        self.moved_piece(board).piece_type == PieceType::King && self.manhattan() > 1
+    }
+    fn manhattan(&self) -> usize {
+        let x1 = self.start().x;
+        let y1 = self.start().y;
+        let x2 = self.end().x;
+        let y2 = self.end().y;
+        usize::abs_diff(x1, x2) + usize::abs_diff(y1, y2)
     }
 }

@@ -54,7 +54,7 @@ pub enum PieceType {
     Pawn,
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct ChessMove {
     // These are 1-indexed
     pub(super) start: Coord,

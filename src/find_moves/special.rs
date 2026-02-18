@@ -27,10 +27,9 @@ impl Board {
             range_between.next();
             range_between.next_back();
             let mut tiles_between = range_between.map(|x| self.get_tile(Coord::xy(x, rank)));
-            let res: Vec<Tile> = tiles_between.clone().collect();
-            dbg!(res);
+            // let res: Vec<Tile> = tiles_between.clone().collect();
+            // dbg!(res);
             if tiles_between.all(|x| x.get_piece().is_none()) {
-                println!("This one works!");
                 castling_moves.push(ChessMove::new(
                     Coord::xy(king_x, rank),
                     Coord::xy(rook_x, rank),
