@@ -16,16 +16,42 @@ impl Board {
         }
     }
     pub fn make_move(&mut self, chess_move: ChessMove) -> Result<(), &'static str> {
-        if chess_move.is_castling(self) {
-            println!("CASTLING!!!");
-        }
         update_fifty_move_rule(self, chess_move); // Run before make_physical_move()
-        make_physical_move(self, chess_move)?;
+        if chess_move.is_castling(self) {
+            make_castling_move(self, chess_move)?;
+        } else {
+            make_physical_move(self, chess_move)?;
+        }
         update_pasant_square(self, chess_move);
         switch_colours(self);
         update_whole_moves(self); // Run after make_physical_move()
         return Ok(());
         // INNER FNS
+        fn make_castling_move(
+            mut board: &mut Board,
+            chess_move: ChessMove,
+        ) -> Result<(), &'static str> {
+            if !chess_move.is_castling(board) {
+                return Err("Can't do castling move: not a castling");
+            }
+            let possible_castlings = board.find_castling_moves();
+            // let mut this_castling_move;
+            // for possible_castling in possible_castlings {
+            //     if possible_castling.0 == chess_move {
+            //         this_castling_move = possible_castling;
+            //         break;
+            //     }
+            // }
+            let Some(this_castling_move) = possible_castlings.iter().find(|&x| x.0 == chess_move)
+            else {
+                return Err("Can't do castling move: internal error");
+            };
+            // Firstly, move king
+            make_physical_move(&mut board, this_castling_move.0)?;
+            // Secondly, move rook
+            make_physical_move(&mut board, this_castling_move.1)?;
+            return Ok(());
+        }
         fn make_physical_move(
             board: &mut Board,
             chess_move: ChessMove,
@@ -33,7 +59,7 @@ impl Board {
             // Check for moving empty piece
             let start_tile = board.get_tile(chess_move.start());
             let Some(moved_piece) = start_tile.piece else {
-                return Err("Tried to move a tile without a piece!");
+                return Err("Can't do move: tried to move an empty piece");
             };
             // Check for promotion
             let moving_piece = if let Some(promote_piece) = chess_move.promote_to {

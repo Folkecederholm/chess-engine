@@ -34,8 +34,8 @@ pub struct Tile {
 #[derive(Clone, Copy, Debug)]
 //This needs to be public to construct an Option<Piece>
 pub struct Piece {
-    pub(super) colour: Colour,
-    pub(super) piece_type: PieceType,
+    pub colour: Colour,
+    pub piece_type: PieceType,
 }
 
 #[derive(Clone, Copy, PartialEq, Debug)]
