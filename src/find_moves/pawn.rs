@@ -1,27 +1,7 @@
 use crate::types::defs::*;
 
 impl Board {
-    fn tile_is_empty(&self, x: usize, y: usize) -> bool {
-        self.get_tile(Coord::xy(x, y)).get_piece().is_none()
-    }
-    fn tile_has_colour(&self, x: usize, y: usize, colour: Colour) -> bool {
-        let Some(tile) = self.get_tile(Coord::xy(x, y)).get_piece() else {
-            return false;
-        };
-        if tile.colour == colour { true } else { false }
-    }
-    fn tile_can_be_taken(&self, x: usize, y: usize) -> bool {
-        self.tile_has_colour(x, y, {
-            // If the tile has the colour whose turn it isn't
-            let mut c = self.get_colour_turn();
-            c.switch();
-            c
-        })
-    }
-}
-
-impl Board {
-    pub fn find_pawn_moves(&self, coord: Coord) -> Vec<ChessMove> {
+    pub(super) fn find_pawn_moves(&self, coord: Coord) -> Vec<ChessMove> {
         if !legal_pawn(coord) {
             return vec![];
         }

@@ -1,7 +1,9 @@
 mod find_moves {
     pub mod all;
     pub mod castling;
+    pub mod knight;
     pub mod pawn;
+    pub mod sliding;
 }
 
 mod parsing {
@@ -15,6 +17,7 @@ mod types {
         pub mod board;
         pub mod coord;
         pub mod piece;
+        pub mod slider;
         pub mod tile;
     }
 }

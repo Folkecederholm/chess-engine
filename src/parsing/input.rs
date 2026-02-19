@@ -57,8 +57,9 @@ pub fn parse_user_input(input: &str, board: &mut Board) {
                 println!("{:?}", board.find_castling_moves())
             }
             "moves" => {
-                println!("Found {} moves", board.find_all_moves().len());
-                println!("moves: \n{:?}", board.find_all_moves());
+                let found_moves = board.find_all_moves();
+                println!("Found {} moves", found_moves.len());
+                println!("moves: \n{:?}", found_moves);
             }
             _ => {
                 wrongly_called();

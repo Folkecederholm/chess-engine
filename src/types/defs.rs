@@ -61,3 +61,12 @@ pub struct ChessMove {
     pub(super) end: Coord,
     pub(super) promote_to: Option<PieceType>,
 }
+
+#[derive(Debug)]
+pub struct Slider {
+    // x and y denote the jump sizes
+    pub x: isize,
+    pub y: isize,
+    pub slide: bool,
+    pub move_fn: fn(&Board, Tile) -> bool,
+}
