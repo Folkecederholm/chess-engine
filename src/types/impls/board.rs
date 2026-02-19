@@ -223,6 +223,26 @@ impl Board {
     pub fn get_passant_square(&self) -> Option<Coord> {
         self.passant_square
     }
+    pub fn get_king(&self) -> Coord {
+        let king = Piece {
+            piece_type: PieceType::King,
+            colour: match self.get_colour_turn() {
+                Colour::White => Colour::Black,
+                Colour::Black => Colour::White,
+            },
+        };
+        for col in 1..8 {
+            for row in 1..8 {
+                let Tile { piece: Some(piece) } = self.get_tile(Coord::xy(col, row)) else {
+                    break;
+                };
+                if piece == king {
+                    return Coord::xy(col, row);
+                }
+            }
+        }
+        unreachable!()
+    }
 }
 
 use std::fmt;

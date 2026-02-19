@@ -26,6 +26,14 @@ impl Board {
 
 impl Board {
     pub fn find_all_moves(&self) -> Vec<ChessMove> {
+        let unchecked_moves = self.find_unchecked_moves();
+        let problematic_moves = self.find_problematic_moves();
+        unchecked_moves
+            .into_iter()
+            .filter(|x| !problematic_moves.contains(x))
+            .collect()
+    }
+    pub fn find_unchecked_moves(&self) -> Vec<ChessMove> {
         let mut moves = vec![];
         fn tile_is_capturable(board: &Board, tile: Tile) -> bool {
             if tile.get_piece().is_none() {

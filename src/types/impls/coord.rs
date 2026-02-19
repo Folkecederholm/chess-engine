@@ -101,4 +101,13 @@ impl ChessMove {
         let y2 = self.end().y;
         usize::abs_diff(x1, x2) + usize::abs_diff(y1, y2)
     }
+    pub fn reverse(&self) -> Self {
+        // Promotion moves should NOT be reversed
+        // Hmmm... maybe I should set promote_to to PieceType::Pawn?
+        Self {
+            start: self.end,
+            end: self.start,
+            promote_to: None,
+        }
+    }
 }

@@ -1,4 +1,5 @@
 #![allow(unused)]
+#[derive(Clone)]
 pub struct Board {
     pub grid: [[Tile; 8]; 8],
     pub(super) turn_to_play: Colour,
@@ -9,6 +10,7 @@ pub struct Board {
     pub(super) castling_rights: CastlingRights,
 }
 
+#[derive(Clone)]
 pub enum ChessVariant {
     Chess,
     Fisher,
@@ -31,7 +33,7 @@ pub struct Tile {
     pub(super) piece: Option<Piece>,
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 //This needs to be public to construct an Option<Piece>
 pub struct Piece {
     pub colour: Colour,
