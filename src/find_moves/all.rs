@@ -34,7 +34,6 @@ impl Board {
         //     .collect()
         /* */
 
-        println!("Found {} moves", unchecked_moves.len());
         unchecked_moves
             .into_iter()
             .filter(|x| is_move_allowed(*x, self))
