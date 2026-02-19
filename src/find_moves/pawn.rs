@@ -36,30 +36,26 @@ impl Board {
         let tile_between_left = coord.x.checked_sub(1);
         if let Some(tile) = tile_between_left
             && tile > 0
+            && (self.tile_can_be_taken(tile, one_tile_forward)
+                || Some(Coord::xy(tile, one_tile_forward)) == self.get_passant_square())
         {
-            if self.tile_can_be_taken(tile, one_tile_forward)
-                || Some(Coord::xy(tile, one_tile_forward)) == self.get_passant_square()
-            {
-                found_moves.push(ChessMove::new(
-                    coord,
-                    Coord::xy(tile, one_tile_forward),
-                    None,
-                ));
-            }
+            found_moves.push(ChessMove::new(
+                coord,
+                Coord::xy(tile, one_tile_forward),
+                None,
+            ));
         }
         let tile_between_right = coord.x.checked_add(1);
         if let Some(tile) = tile_between_right
             && tile <= 8
+            && (self.tile_can_be_taken(tile, one_tile_forward)
+                || Some(Coord::xy(tile, one_tile_forward)) == self.get_passant_square())
         {
-            if self.tile_can_be_taken(tile, one_tile_forward)
-                || Some(Coord::xy(tile, one_tile_forward)) == self.get_passant_square()
-            {
-                found_moves.push(ChessMove::new(
-                    coord,
-                    Coord::xy(tile, one_tile_forward),
-                    None,
-                ));
-            }
+            found_moves.push(ChessMove::new(
+                coord,
+                Coord::xy(tile, one_tile_forward),
+                None,
+            ));
         }
         return found_moves;
         // INNER FNS
