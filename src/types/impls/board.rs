@@ -231,10 +231,10 @@ impl Board {
                 Colour::Black => Colour::White,
             },
         };
-        for col in 1..8 {
-            for row in 1..8 {
+        for col in 1..=8 {
+            for row in 1..=8 {
                 let Tile { piece: Some(piece) } = self.get_tile(Coord::xy(col, row)) else {
-                    break;
+                    continue;
                 };
                 if piece == king {
                     return Coord::xy(col, row);

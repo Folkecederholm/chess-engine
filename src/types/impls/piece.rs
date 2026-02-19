@@ -41,4 +41,10 @@ impl Colour {
             Self::Black => Self::White,
         };
     }
+    pub fn other(self) -> Self {
+        match self {
+            Self::White => Self::Black,
+            Self::Black => Self::White,
+        }
+    }
 }

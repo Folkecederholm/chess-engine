@@ -1,4 +1,4 @@
-use crate::types::defs::*;
+use crate::{find_moves::check::is_move_allowed, types::defs::*};
 
 impl Board {
     pub fn tile_is_empty(&self, x: usize, y: usize) -> bool {
@@ -27,10 +27,14 @@ impl Board {
 impl Board {
     pub fn find_all_moves(&self) -> Vec<ChessMove> {
         let unchecked_moves = self.find_unchecked_moves();
-        let problematic_moves = self.find_problematic_moves();
+        // let problematic_moves = self.find_problematic_moves();
+        // unchecked_moves
+        //     .into_iter()
+        //     .filter(|x| !problematic_moves.contains(x))
+        //     .collect()
         unchecked_moves
             .into_iter()
-            .filter(|x| !problematic_moves.contains(x))
+            .filter(|x| is_move_allowed(x, &self.clone()))
             .collect()
     }
     pub fn find_unchecked_moves(&self) -> Vec<ChessMove> {
