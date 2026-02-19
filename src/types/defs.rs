@@ -64,11 +64,24 @@ pub struct ChessMove {
     pub(super) promote_to: Option<PieceType>,
 }
 
+// This struct is to define pieces.
+// rook: x = 1, y = 0, slide = true
+// knight: x = 1, y = 2, slide = false
 #[derive(Debug, Clone, Copy)]
 pub struct Slider {
     // x and y denote the jump sizes
     pub x: isize,
     pub y: isize,
     pub slide: bool,
-    pub move_fn: fn(&Board, Tile) -> bool,
+    pub move_fn: fn(&Board, Tile) -> MeetsPieceAction,
+}
+
+// This enum is to define what a piece should do after having met a piece.
+// Should it not be able to take the piece?
+// Should it be able to take the piece?
+// Or should it continue?
+pub enum MeetsPieceAction {
+    CanTake,
+    CanContinue,
+    CannotTake,
 }

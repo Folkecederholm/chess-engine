@@ -1,7 +1,12 @@
 use crate::types::defs::*;
 
 impl Slider {
-    pub fn new(x: isize, y: isize, slide: bool, move_fn: fn(&Board, Tile) -> bool) -> Self {
+    pub fn new(
+        x: isize,
+        y: isize,
+        slide: bool,
+        move_fn: fn(&Board, Tile) -> MeetsPieceAction,
+    ) -> Self {
         Self {
             x,
             y,

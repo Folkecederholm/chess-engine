@@ -32,18 +32,31 @@ impl Board {
         //     .into_iter()
         //     .filter(|x| !problematic_moves.contains(x))
         //     .collect()
+        /* */
+
+        println!("Found {} moves", unchecked_moves.len());
         unchecked_moves
             .into_iter()
-            .filter(|x| is_move_allowed(x, &self.clone()))
+            .filter(|x| is_move_allowed(*x, self))
             .collect()
     }
     pub fn find_unchecked_moves(&self) -> Vec<ChessMove> {
         let mut moves = vec![];
-        fn tile_is_capturable(board: &Board, tile: Tile) -> bool {
-            if tile.get_piece().is_none() {
-                true
+        use MeetsPieceAction::*;
+        fn tile_is_capturable(board: &Board, tile: Tile) -> MeetsPieceAction {
+            // if tile.get_piece().is_none() {
+            //     true
+            // } else {
+            //     tile.get_piece().unwrap().colour != board.get_colour_turn()
+            // }
+            let Some(piece) = tile.get_piece() else {
+                return CanContinue;
+            };
+            if piece.colour == board.get_colour_turn() {
+                CannotTake
             } else {
-                tile.get_piece().unwrap().colour != board.get_colour_turn()
+                // Other colour
+                CanTake
             }
         }
         for x in 1..=8 {

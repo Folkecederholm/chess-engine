@@ -230,6 +230,7 @@ impl Board {
                 Colour::White => Colour::Black,
                 Colour::Black => Colour::White,
             },
+            // colour: self.get_colour_turn(),
         };
         for col in 1..=8 {
             for row in 1..=8 {
