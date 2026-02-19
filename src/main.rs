@@ -1,7 +1,6 @@
 mod find_moves {
     pub mod all;
     pub mod castling;
-    pub mod knight;
     pub mod pawn;
     pub mod sliding;
 }
