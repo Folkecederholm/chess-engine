@@ -92,6 +92,13 @@ impl Board {
             Ok(())
         }
         fn update_pasant_square(board: &mut Board, chess_move: ChessMove) {
+            if let Tile { piece: Some(piece) } = board.get_tile(chess_move.start()) {
+                if piece.piece_type != PieceType::Pawn {
+                    return;
+                }
+            } else {
+                return;
+            }
             // Check for pawn double move
             let y_diff = chess_move.start().y.abs_diff(chess_move.end().y);
             // And if there is a double move, set the en passant tile to the skipped tile
@@ -101,6 +108,8 @@ impl Board {
                     y: usize::midpoint(chess_move.start().y, chess_move.end().y),
                 };
                 board.set_passant(Some(skipped_tile));
+            } else {
+                board.set_passant(None);
             }
         }
         fn switch_colours(board: &mut Board) {
