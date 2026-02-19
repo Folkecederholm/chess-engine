@@ -29,9 +29,9 @@ impl Board {
                     coord,
                     Coord::xy(coord.x, two_tiles_forward),
                     None,
-                ))
+                ));
             }
-        };
+        }
         // Check for capturing, including en passant
         let tile_between_left = coord.x.checked_sub(1);
         if let Some(tile) = tile_between_left
@@ -44,7 +44,7 @@ impl Board {
                     coord,
                     Coord::xy(tile, one_tile_forward),
                     None,
-                ))
+                ));
             }
         }
         let tile_between_right = coord.x.checked_add(1);
@@ -58,7 +58,7 @@ impl Board {
                     coord,
                     Coord::xy(tile, one_tile_forward),
                     None,
-                ))
+                ));
             }
         }
         return found_moves;

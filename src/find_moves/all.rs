@@ -8,7 +8,7 @@ impl Board {
         let Some(tile) = self.get_tile(Coord::xy(x, y)).get_piece() else {
             return false;
         };
-        if tile.colour == colour { true } else { false }
+        tile.colour == colour
     }
     pub fn tile_can_be_taken(&self, x: usize, y: usize) -> bool {
         self.tile_has_colour(x, y, {
@@ -30,10 +30,8 @@ impl Board {
         fn tile_is_capturable(board: &Board, tile: Tile) -> bool {
             if tile.get_piece().is_none() {
                 true
-            } else if tile.get_piece().unwrap().colour != board.get_colour_turn() {
-                true
             } else {
-                false
+                tile.get_piece().unwrap().colour != board.get_colour_turn()
             }
         }
         for x in 1..=8 {
@@ -51,29 +49,29 @@ impl Board {
                     }
                     PieceType::Knight => {
                         let slider = Slider::new(1, 2, false, tile_is_capturable);
-                        moves.append(&mut self.find_sliding_moves(coord, slider))
+                        moves.append(&mut self.find_sliding_moves(&coord, slider));
                     }
                     PieceType::Rook => {
                         let slider = Slider::new(1, 0, true, tile_is_capturable);
-                        moves.append(&mut self.find_sliding_moves(coord, slider));
+                        moves.append(&mut self.find_sliding_moves(&coord, slider));
                     }
                     PieceType::Bishop => {
                         let slider = Slider::new(1, 1, true, tile_is_capturable);
-                        moves.append(&mut self.find_sliding_moves(coord, slider))
+                        moves.append(&mut self.find_sliding_moves(&coord, slider));
                     }
                     PieceType::Queen => {
                         let slider = Slider::new(1, 0, true, tile_is_capturable);
-                        moves.append(&mut self.find_sliding_moves(coord, slider));
+                        moves.append(&mut self.find_sliding_moves(&coord, slider));
                         let slider = Slider::new(1, 1, true, tile_is_capturable);
-                        moves.append(&mut self.find_sliding_moves(coord, slider))
+                        moves.append(&mut self.find_sliding_moves(&coord, slider));
                     }
                     PieceType::King => {
                         let slider = Slider::new(1, 0, false, tile_is_capturable);
-                        moves.append(&mut self.find_sliding_moves(coord, slider));
+                        moves.append(&mut self.find_sliding_moves(&coord, slider));
                         let slider = Slider::new(1, 1, false, tile_is_capturable);
-                        moves.append(&mut self.find_sliding_moves(coord, slider))
+                        moves.append(&mut self.find_sliding_moves(&coord, slider));
                     }
-                };
+                }
             }
         }
         // Add castling moves to found moves
@@ -83,6 +81,6 @@ impl Board {
             .map(|x| x.0)
             .collect::<Vec<ChessMove>>();
         moves.append(&mut castling_moves);
-        return moves;
+        moves
     }
 }

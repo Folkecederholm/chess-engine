@@ -29,7 +29,7 @@ impl Board {
         return Ok(());
         // INNER FNS
         fn make_castling_move(
-            mut board: &mut Board,
+            board: &mut Board,
             chess_move: ChessMove,
         ) -> Result<(), &'static str> {
             if !chess_move.is_castling(board) {
@@ -48,10 +48,10 @@ impl Board {
                 return Err("Can't do castling move: internal error");
             };
             // Firstly, move king
-            make_physical_move(&mut board, this_castling_move.0)?;
+            make_physical_move(board, this_castling_move.0)?;
             // Secondly, move rook
-            make_physical_move(&mut board, this_castling_move.1)?;
-            return Ok(());
+            make_physical_move(board, this_castling_move.1)?;
+            Ok(())
         }
         fn make_physical_move(
             board: &mut Board,
@@ -202,8 +202,8 @@ impl Board {
     pub fn remove_castling_rights_coord(&mut self, coord: Coord) {
         // Feels tautological
         let castling_rights = self.castling_rights.castling_rights;
-        // let mut new_castling_rights: [Option<Coord>; 4] = [None; 4];
-        let mut new_castling_rights = castling_rights.clone();
+        // This will automatically clone
+        let mut new_castling_rights = castling_rights;
         let mut colour = self.turn_to_play;
         colour.switch();
         let mut i = 0;
@@ -231,7 +231,7 @@ impl fmt::Display for Board {
         let mut buf = String::new();
         for row in self.grid.iter().rev() {
             buf.push('\n');
-            for tile in row.iter() {
+            for tile in row {
                 buf.push_str(format!("{tile} ").as_str());
             }
         }

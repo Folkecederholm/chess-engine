@@ -67,9 +67,9 @@ impl Board {
             let rows = pieces_fen.split('/');
             for (y0, row) in rows.rev().enumerate() {
                 let y = y0 + 1;
-                let mut row_iter = row.chars().rev();
+                let row_iter = row.chars().rev();
                 let mut x = 8;
-                while let Some(piece_ascii) = row_iter.next() {
+                for piece_ascii in row_iter {
                     if piece_ascii.is_ascii_digit() {
                         // .unwrap() is safe since we've already checked it's a digit
                         // row_iter.next();

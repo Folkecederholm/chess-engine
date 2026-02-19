@@ -62,7 +62,7 @@ pub struct ChessMove {
     pub(super) promote_to: Option<PieceType>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Slider {
     // x and y denote the jump sizes
     pub x: isize,

@@ -112,27 +112,25 @@ impl Board {
     //         return vec![];
     //     }
     // }
-    pub fn find_sliding_moves(&self, coord: Coord, slider: Slider) -> Vec<ChessMove> {
+    pub fn find_sliding_moves(&self, coord: &Coord, slider: Slider) -> Vec<ChessMove> {
         let mut moves = vec![];
         let siblings = slider.siblings();
         for single_slider in siblings {
-            moves.append(&mut straight_sliding(self, coord, single_slider));
+            moves.append(&mut straight_sliding(self, *coord, single_slider));
         }
         return moves;
+        #[allow(clippy::cast_possible_wrap)]
+        #[allow(clippy::cast_sign_loss)]
         fn straight_sliding(board: &Board, start_coord: Coord, slider: Slider) -> Vec<ChessMove> {
             let mut moves = vec![];
             let mut coord = start_coord;
             loop {
-                coord = {
-                    let new_x_isize = coord.x as isize + slider.x;
-                    if !new_x_isize.is_positive() || new_x_isize > 8 {
+                coord = match coord_add(coord, slider.x, slider.y) {
+                    Ok(n) => n,
+                    Err(()) => {
+                        // This should silently fail since it happens every time a piece moves off the board
                         return moves;
                     }
-                    let new_y_isize = coord.y as isize + slider.y;
-                    if !new_y_isize.is_positive() || new_y_isize > 8 {
-                        return moves;
-                    }
-                    Coord::xy(new_x_isize as usize, new_y_isize as usize)
                 };
                 if (slider.move_fn)(board, board.get_tile(coord)) {
                     moves.push(ChessMove::new(start_coord, coord, None));
@@ -143,8 +141,17 @@ impl Board {
                     return moves;
                 }
             }
-            // It never comes to this point, since the code always exits in the loop {}.
-            //return moves;
+            fn coord_add(coord: Coord, other_x: isize, y_other: isize) -> Result<Coord, ()> {
+                let new_x_isize = coord.x as isize + other_x;
+                if !new_x_isize.is_positive() || new_x_isize > 8 {
+                    return Err(());
+                }
+                let new_isize_y = coord.y as isize + y_other;
+                if !new_isize_y.is_positive() || new_isize_y > 8 {
+                    return Err(());
+                }
+                Ok(Coord::xy(new_x_isize as usize, new_isize_y as usize))
+            }
         }
     }
 }

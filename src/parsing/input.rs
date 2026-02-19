@@ -54,12 +54,12 @@ pub fn parse_user_input(input: &str, board: &mut Board) {
                 print!("{board}");
             }
             "castling" => {
-                println!("{:?}", board.find_castling_moves())
+                println!("{:?}", board.find_castling_moves());
             }
             "moves" => {
                 let found_moves = board.find_all_moves();
                 println!("Found {} moves", found_moves.len());
-                println!("moves: \n{:?}", found_moves);
+                println!("moves: \n{found_moves:?}");
             }
             _ => {
                 wrongly_called();
