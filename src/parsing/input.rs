@@ -29,6 +29,11 @@ pub fn parse_user_input(input: &str, board: &mut Board) {
                     let _ = tokens.remove(0);
                     parse_position(&mut tokens, board);
                 }
+                "go" => {
+                    let found_moves = board.find_all_moves();
+                    let chosen_move = choose_move(board, found_moves);
+                    println!("bestmove {}", chosen_move.long_algebraic());
+                }
                 _ => {
                     println!("Hello");
                 }
@@ -60,6 +65,11 @@ pub fn parse_user_input(input: &str, board: &mut Board) {
                 let found_moves = board.find_all_moves();
                 println!("Found {} moves", found_moves.len());
                 println!("moves: \n{found_moves:?}");
+            }
+            "unchecked" => {
+                let found_moves = board.find_unchecked_moves();
+                println!("Found {} moves:", found_moves.len());
+                println!("{found_moves:?}");
             }
             "go" => {
                 let found_moves = board.find_all_moves();

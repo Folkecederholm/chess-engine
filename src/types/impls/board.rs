@@ -19,7 +19,7 @@ impl Board {
         update_fifty_move_rule(self, chess_move); // Run before make_physical_move()
         if chess_move.is_castling(self) {
             make_castling_move(self, chess_move)?;
-            self.remove_castling_rights_just_played();
+            self.remove_castling_rights_colour(self.get_colour_turn());
         } else {
             make_physical_move(self, chess_move)?;
         }
@@ -36,15 +36,10 @@ impl Board {
                 return Err("Can't do castling move: not a castling");
             }
             let possible_castlings = board.find_castling_moves();
-            // let mut this_castling_move;
-            // for possible_castling in possible_castlings {
-            //     if possible_castling.0 == chess_move {
-            //         this_castling_move = possible_castling;
-            //         break;
-            //     }
-            // }
-            let Some(this_castling_move) = possible_castlings.iter().find(|&x| x.0 == chess_move)
-            else {
+            // This closure is a bit weird. It's because En Croissant sends e1a1 instead of e1c1 /*[*/.../*]*/
+            let Some(this_castling_move) = possible_castlings.iter().find(|&x| {
+                x.0 == chess_move /*[*/||(chess_move == ChessMove::new(x.0.start(), x.1.start(), None))
+            } /*]*/) else {
                 return Err("Can't do castling move: internal error");
             };
             // Firstly, move king
@@ -69,6 +64,7 @@ impl Board {
                 moved_piece
             };
             check_for_passant(board, chess_move);
+            remove_castling_rights(board, chess_move);
             board.set_piece(chess_move.end(), moving_piece)?;
             board.remove_piece(chess_move.start());
             // INNER FNS
@@ -130,6 +126,13 @@ impl Board {
                 board.fifty_move_rule += 1;
             }
         }
+        fn remove_castling_rights(board: &mut Board, chess_move: ChessMove) {
+            match chess_move.moved_piece(board).piece_type {
+                PieceType::King => board.remove_castling_rights_colour(board.get_colour_turn()),
+                PieceType::Rook => board.remove_castling_rights_coord(chess_move.start()),
+                _ => {}
+            }
+        }
     }
     pub fn set_piece(&mut self, coord: Coord, piece: Piece) -> Result<(), &'static str> {
         // self.grid[coord.x][coord.y] = Tile { piece: Some(piece) };
@@ -188,15 +191,14 @@ impl Board {
     pub fn get_colour_turn(&self) -> Colour {
         self.turn_to_play
     }
-    pub fn remove_castling_rights_just_played(&mut self) {
-        let rank = match self.get_colour_turn() {
-            // Switched because we want the colour that just played
-            // Not switched because it works like that
+    pub fn remove_castling_rights_colour(&mut self, colour: Colour) {
+        let rank = match colour {
             Colour::White => 1,
             Colour::Black => 8,
         };
         for x in 1..8 {
             self.remove_castling_rights_coord(Coord::xy(x, rank));
+            println!("coord: {}", Coord::xy(x, rank));
         }
     }
     pub fn remove_castling_rights_coord(&mut self, coord: Coord) {
@@ -206,17 +208,15 @@ impl Board {
         let mut new_castling_rights = castling_rights;
         let mut colour = self.turn_to_play;
         colour.switch();
-        let mut i = 0;
-        for right in castling_rights {
+        for (i, right) in castling_rights.iter().enumerate() {
             let Some(castling_right) = right else {
                 continue;
             };
             // If it's the coord we want to remove
-            if castling_right == coord {
+            if *castling_right == coord {
                 // new_castling_rights[i] = Some(castling_right);
                 new_castling_rights[i] = None;
             }
-            i += 1;
         }
         self.set_castling(new_castling_rights);
     }

@@ -36,6 +36,7 @@ impl Coord {
     pub fn zero_indexed(&self) -> (usize, usize) {
         (self.x - 1, self.y - 1)
     }
+    #[allow(unused)]
     pub fn as_tuple(&self) -> (usize, usize) {
         (self.x, self.y)
     }
@@ -107,6 +108,12 @@ impl ChessMove {
                 // .0 is the king move
                 return true;
             }
+            // En Croissant sends e1a1 instead of e1c1
+            /*[*/
+            if *self == ChessMove::new(castling_move.0.start(), castling_move.1.start(), None) {
+                return true;
+            }
+            /*]*/
         }
         false
     }
@@ -127,7 +134,14 @@ impl ChessMove {
         }
     }
     pub fn long_algebraic(&self) -> String {
-        let s = String::new();
-        format!("{}{}", self.start(), self.end())
+        let s = match self.promote_to {
+            None => "",
+            Some(PieceType::Queen) => "q",
+            Some(PieceType::Knight) => "n",
+            Some(PieceType::Rook) => "r",
+            Some(PieceType::Bishop) => "b",
+            _ => unreachable!(),
+        };
+        format!("{}{}{}", self.start(), self.end(), s)
     }
 }

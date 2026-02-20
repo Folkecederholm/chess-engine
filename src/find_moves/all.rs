@@ -27,12 +27,6 @@ impl Board {
 impl Board {
     pub fn find_all_moves(&self) -> Vec<ChessMove> {
         let unchecked_moves = self.find_unchecked_moves();
-        // let problematic_moves = self.find_problematic_moves();
-        // unchecked_moves
-        //     .into_iter()
-        //     .filter(|x| !problematic_moves.contains(x))
-        //     .collect()
-        /* */
 
         unchecked_moves
             .into_iter()
