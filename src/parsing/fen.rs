@@ -6,12 +6,6 @@ impl Board {
         use crate::types::defs::Piece;
         self.drain();
         let mut split = fen.split(' ');
-        // let pieces_fen = match split.next() {
-        //     Some(n) => n,
-        //     None => {
-        //         exit!("Invalid FEN!")
-        //     }
-        // };
         let Some(pieces_fen) = split.next() else {
             exit!("Invalid FEN!");
         };
@@ -43,26 +37,6 @@ impl Board {
         };
         fen_whole_moves(self, whole_move_fen);
         // INNER FNS
-        /*
-        fn fen_board_state(board: &mut Board, pieces_fen: &str) {
-            dbg!(pieces_fen);
-            let rows = pieces_fen.split('/');
-            for (y, row) in rows.enumerate() {
-                let mut row_iter = row.chars().enumerate();
-                while let Some(tuple) = row_iter.next() {
-                    let (x, piece) = tuple;
-                    if piece.is_ascii_digit() {
-                        row_iter.nth(piece.to_digit(10).unwrap() as usize);
-                    } else {
-                        let piece_to_add = Piece::get_piece_from_fen(piece);
-                        board.set_piece(Coord::xy(x + 1, y + 1), piece_to_add);
-                        println!("Putting piece {piece_to_add:?} on tile with x={x} and y={y}!");
-                        println!("Because of piece={piece}");
-                    }
-                }
-            }
-        }
-        */
         fn fen_board_state(board: &mut Board, pieces_fen: &str) -> Result<(), &'static str> {
             let rows = pieces_fen.split('/');
             for (y0, row) in rows.rev().enumerate() {

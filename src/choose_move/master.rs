@@ -1,7 +1,7 @@
 use crate::types::defs::*;
 
 #[allow(clippy::cast_possible_truncation)]
-pub fn choose_move(_board: &Board, moves: Vec<ChessMove>) -> ChessMove {
+pub fn choose_move(_board: &Board, moves: /*Vec<ChessMove>*/ &[ChessMove]) -> ChessMove {
     use std::time;
     let max = moves.len();
     let moment = time::Instant::now().elapsed().as_nanos();

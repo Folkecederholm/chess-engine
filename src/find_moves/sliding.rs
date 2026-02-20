@@ -1,14 +1,7 @@
 use crate::types::defs::*;
 
-// I realise that knight.rs is unnecessary.
-// This file should contain a function that gets all sliding moves, from an x- and a y-coordinate
-// for the jump lengths. It should also contain a slide function to continue.
-// A rook = 1,0,true
-// A knight = 1,2,false
-// A king = 1,0,false + 1,1,false
-// und so weiter
-
 impl Board {
+    // See src/types/defs-->Slider for an explanation of what is being represented here
     pub fn find_sliding_moves(&self, coord: &Coord, slider: Slider) -> Vec<ChessMove> {
         let mut moves = vec![];
         let siblings = slider.siblings();

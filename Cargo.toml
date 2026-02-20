@@ -7,6 +7,7 @@ edition = "2024"
 pedantic = { level = "warn", priority = -1 }
 redundant-else = "allow"
 wildcard-imports = "allow"
+enum-glob-use = "allow"
 items-after-statements = "allow" # To allow nested functions after the function body
 too-many-lines = "allow"
 #cargo = "warn"

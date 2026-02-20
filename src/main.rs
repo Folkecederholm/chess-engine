@@ -7,7 +7,7 @@ mod find_moves {
 }
 
 mod choose_move {
-    pub mod choose_move;
+    pub mod master;
 }
 
 mod parsing {
@@ -18,7 +18,12 @@ mod parsing {
 mod types {
     pub mod defs;
     pub mod impls {
-        pub mod board;
+        mod board {
+            pub mod fmt;
+            pub mod helpers;
+            pub mod make_move;
+        }
+        pub mod chess_move;
         pub mod coord;
         pub mod piece;
         pub mod slider;

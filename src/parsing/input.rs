@@ -1,4 +1,4 @@
-use crate::{choose_move::choose_move::choose_move, types::defs::Board};
+use crate::{choose_move::master::choose_move, types::defs::Board};
 
 pub fn take_user_input(input: &mut String) {
     use std::io::{Write, stdin, stdout};
@@ -31,7 +31,7 @@ pub fn parse_user_input(input: &str, board: &mut Board) {
                 }
                 "go" => {
                     let found_moves = board.find_all_moves();
-                    let chosen_move = choose_move(board, found_moves);
+                    let chosen_move = choose_move(board, &found_moves);
                     println!("bestmove {}", chosen_move.long_algebraic());
                 }
                 _ => {
@@ -73,7 +73,7 @@ pub fn parse_user_input(input: &str, board: &mut Board) {
             }
             "go" => {
                 let found_moves = board.find_all_moves();
-                let chosen_move = choose_move(board, found_moves);
+                let chosen_move = choose_move(board, &found_moves);
                 println!("bestmove {}", chosen_move.long_algebraic());
             }
             _ => {

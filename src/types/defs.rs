@@ -1,4 +1,3 @@
-#![allow(unused)]
 #[derive(Clone)]
 pub struct Board {
     pub grid: [[Tile; 8]; 8],
@@ -10,12 +9,22 @@ pub struct Board {
     pub(super) castling_rights: CastlingRights,
 }
 
+#[allow(unused)]
+// Fisher chess in unimplemented
+/*
+ * To implement Fisher chess:
+ *  - Add the UCI compatible option
+ *  - Change the parsing of FEN
+ * The rest should be Fisher chess compatible!
+ */
 #[derive(Clone)]
 pub enum ChessVariant {
     Chess,
     Fisher,
 }
 
+// These represent what castling rights are on a board.
+// For example, if you've moved your rook and moved it back, you can't castle on that side.
 #[derive(Debug, Copy, Clone)]
 pub struct CastlingRights {
     pub(super) castling_rights: [Option<Coord>; 4],
@@ -34,7 +43,6 @@ pub struct Tile {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-//This needs to be public to construct an Option<Piece>
 pub struct Piece {
     pub colour: Colour,
     pub piece_type: PieceType,

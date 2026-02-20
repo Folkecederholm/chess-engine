@@ -41,10 +41,13 @@ impl Colour {
             Self::Black => Self::White,
         };
     }
-    // pub fn other(self) -> Self {
-    //     match self {
-    //         Self::White => Self::Black,
-    //         Self::Black => Self::White,
-    //     }
-    // }
+    // This SHOULD be more useful than the other one.
+    // But it's weirdly not used anywhere
+    // Aah, whatever, it might be used somewhere
+    /*pub fn other(self) -> Self {
+        match self {
+            Self::White => Self::Black,
+            Self::Black => Self::White,
+        }
+    }*/
 }

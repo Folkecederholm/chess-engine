@@ -1,30 +1,6 @@
 use crate::{find_moves::check::is_move_allowed, types::defs::*};
 
 impl Board {
-    pub fn tile_is_empty(&self, x: usize, y: usize) -> bool {
-        self.get_tile(Coord::xy(x, y)).get_piece().is_none()
-    }
-    fn tile_has_colour(&self, x: usize, y: usize, colour: Colour) -> bool {
-        let Some(tile) = self.get_tile(Coord::xy(x, y)).get_piece() else {
-            return false;
-        };
-        tile.colour == colour
-    }
-    pub fn tile_can_be_taken(&self, x: usize, y: usize) -> bool {
-        self.tile_has_colour(x, y, {
-            // If the tile has the colour whose turn it isn't
-            let mut c = self.get_colour_turn();
-            c.switch();
-            c
-        })
-    }
-    #[allow(unused)]
-    pub fn tile_is_movable(&self, x: usize, y: usize) -> bool {
-        self.tile_is_empty(x, y) || self.tile_can_be_taken(x, y)
-    }
-}
-
-impl Board {
     pub fn find_all_moves(&self) -> Vec<ChessMove> {
         let unchecked_moves = self.find_unchecked_moves();
 

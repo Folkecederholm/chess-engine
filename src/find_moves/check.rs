@@ -8,6 +8,5 @@ pub fn is_move_allowed(chess_move: ChessMove, board: &Board) -> bool {
         x
     };
     let moves = state.find_unchecked_moves();
-    let to_ret = moves.iter().all(|x| x.end() != state.get_king());
-    to_ret
+    moves.iter().all(|x| x.end() != state.get_king())
 }
