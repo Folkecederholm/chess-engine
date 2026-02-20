@@ -41,6 +41,22 @@ impl Coord {
     }
 }
 
+use std::fmt;
+impl fmt::Display for Coord {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut buf = String::new();
+        const ALPHABET: [char; 8] = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+        let a = match ALPHABET.get(self.x - 1) {
+            Some(n) => n,
+            None => unreachable!(),
+        };
+        let y = format!("{}", self.y).to_string().chars().next().unwrap(); // This won't fail. Surely?
+        buf.push(*a);
+        buf.push(y);
+        return write!(f, "{buf}");
+    }
+}
+
 #[allow(unused)]
 impl ChessMove {
     pub fn new(start: Coord, end: Coord, promote_to: Option<PieceType>) -> Self {
@@ -109,5 +125,9 @@ impl ChessMove {
             end: self.start,
             promote_to: None,
         }
+    }
+    pub fn long_algebraic(&self) -> String {
+        let s = String::new();
+        format!("{}{}", self.start(), self.end())
     }
 }

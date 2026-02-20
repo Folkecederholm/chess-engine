@@ -6,6 +6,10 @@ mod find_moves {
     pub mod sliding;
 }
 
+mod choose_move {
+    pub mod choose_move;
+}
+
 mod parsing {
     pub mod fen;
     pub mod input;
