@@ -31,7 +31,7 @@ pub fn parse_user_input(input: &str, board: &mut Board) {
                 }
                 "go" => {
                     let found_moves = board.find_all_moves();
-                    let chosen_move = choose_move(board, &found_moves);
+                    let chosen_move = choose_move(board, found_moves);
                     println!("bestmove {}", chosen_move.long_algebraic());
                 }
                 _ => {
@@ -73,7 +73,7 @@ pub fn parse_user_input(input: &str, board: &mut Board) {
             }
             "go" => {
                 let found_moves = board.find_all_moves();
-                let chosen_move = choose_move(board, &found_moves);
+                let chosen_move = choose_move(board, found_moves);
                 println!("bestmove {}", chosen_move.long_algebraic());
             }
             _ => {

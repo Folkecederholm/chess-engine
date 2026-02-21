@@ -40,6 +40,9 @@ impl Coord {
     pub fn as_tuple(&self) -> (usize, usize) {
         (self.x, self.y)
     }
+    pub fn one_d_coord(&self) -> usize {
+        self.zero_indexed().0 + self.zero_indexed().1 * 8
+    }
 }
 
 use std::fmt;

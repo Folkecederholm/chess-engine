@@ -33,6 +33,7 @@ mod types {
 
 mod extras {
     pub mod macros;
+    pub mod patterns;
 }
 
 use crate::types::defs::Board;
