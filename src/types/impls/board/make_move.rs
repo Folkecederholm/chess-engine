@@ -8,8 +8,8 @@ impl Board {
             self.remove_castling_rights_colour(self.get_colour_turn());
         } else {
             make_physical_move(self, chess_move)?;
+            update_pasant_square(self, chess_move);
         }
-        update_pasant_square(self, chess_move);
         switch_colours(self);
         update_whole_moves(self); // Run after make_physical_move()
         return Ok(());
@@ -74,12 +74,15 @@ impl Board {
             Ok(())
         }
         fn update_pasant_square(board: &mut Board, chess_move: ChessMove) {
-            if let Tile { piece: Some(piece) } = board.get_tile(chess_move.start()) {
+            // Called after the move has been made
+            if let Tile { piece: Some(piece) } = board.get_tile(chess_move.end()) {
                 if piece.piece_type != PieceType::Pawn {
+                    board.set_passant(None);
                     return;
                 }
             } else {
-                return;
+                // The piece None was moved?
+                unreachable!()
             }
             // Check for pawn double move
             let y_diff = chess_move.start().y.abs_diff(chess_move.end().y);
