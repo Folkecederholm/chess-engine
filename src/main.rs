@@ -38,6 +38,13 @@ mod extras {
 
 use crate::types::defs::Board;
 fn main() {
+    // {
+    //     use crate::types::defs::*;
+    //     let e4 = Coord::ay('e', 4).unwrap();
+    //     let other = Coord::ay('a', 6).unwrap();
+    //     println!("{}", 2.0 - e4.manhattan(other) as f64 / 8.0);
+    // }
+    // std::process::exit(0);
     let mut input = String::new();
     let mut board = Board::empty();
     loop {

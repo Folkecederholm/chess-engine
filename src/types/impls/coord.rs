@@ -44,6 +44,13 @@ impl Coord {
     pub fn one_d_coord(&self) -> usize {
         self.zero_indexed().0 + self.zero_indexed().1 * 8
     }
+    pub fn manhattan(&self, other: Self) -> usize {
+        // println!("x: {}", self.x.abs_diff(other.x));
+        // println!("y: {}", self.y.abs_diff(other.y));
+        // println!("self: {self}");
+        // println!("other: {other}");
+        self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
+    }
 }
 
 use std::fmt;
