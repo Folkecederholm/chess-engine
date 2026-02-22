@@ -1,4 +1,5 @@
 #[cfg_attr(rustfmt, rustfmt_skip)]
+#[allow(unused)]
 pub const PAWN_PATTERN_BLACK: [f64; 64] = [
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
     2.4, 2.4, 2.4, 2.4, 2.4, 2.4, 2.4, 2.4,
@@ -11,6 +12,7 @@ pub const PAWN_PATTERN_BLACK: [f64; 64] = [
 ];
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
+#[allow(unused)]
 pub const PAWN_PATTERN_WHITE: [f64; 64] = [
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
     1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,

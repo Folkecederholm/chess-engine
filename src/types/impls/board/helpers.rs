@@ -49,7 +49,7 @@ impl Board {
         };
         for x in 1..8 {
             self.remove_castling_rights_coord(Coord::xy(x, rank));
-            println!("coord: {}", Coord::xy(x, rank));
+            // println!("coord: {}", Coord::xy(x, rank));
         }
     }
     pub fn remove_castling_rights_coord(&mut self, coord: Coord) {

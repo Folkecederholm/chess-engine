@@ -40,6 +40,7 @@ impl Coord {
     pub fn as_tuple(&self) -> (usize, usize) {
         (self.x, self.y)
     }
+    #[allow(unused)]
     pub fn one_d_coord(&self) -> usize {
         self.zero_indexed().0 + self.zero_indexed().1 * 8
     }
